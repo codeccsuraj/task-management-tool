@@ -10,7 +10,7 @@ const SharedLayout = () => {
       <Sidebar />
 
       {/* Scrollable Content */}
-      <main className="app-content bg-light min-vh-100">
+      <main className="app-content min-vh-100" style={{background : '#F2F1EC'}}>
         <Header />
         <div className="p-3">
           <Outlet />

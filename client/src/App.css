@@ -2,36 +2,136 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* theme.css — import once, globally (e.g. in main.jsx / index.js) */
+:root {
+  /* Brand */
+  --color-brand: #2F6F4E;
+  --color-brand-dark: #234F38;
+  --color-brand-tint: #E4EEE7;
+
+  /* Surfaces & text */
+  --color-bg: #F2F1EC;
+  --color-surface: #FFFFFF;
+  --color-ink: #1D2A24;
+  --color-ink-soft: #5B685F;
+  --color-line: #DEDACE;
+
+  /* Status */
+  --color-urgent: #B8433A;
+  --color-urgent-dark: #963229;
+  --color-progress: #3B6EA5;
+  --color-amber: #B9822E;
+
+  /* Sidebar */
+  --color-sidebar: #1B2420;
+  --color-sidebar-soft: #2A362F;
+
+  /* Shape & motion */
+  --radius-md: 0.5rem;
+  --transition-base: all 0.2s ease;
+}
+
+/* button.css — modular buttons driven by CSS custom properties.
+   Every variant only sets the --btn-* variables; .btn-base does the rest. */
+
+/* ---------- Base ---------- */
 .btn-base {
-  font-weight: 500;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  line-height: 2rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
-  text-align: center;
-  margin-right: 0.5rem;
+  /* defaults (overridden by variants) */
+  --btn-bg: var(--color-brand);
+  --btn-bg-hover: var(--color-brand-dark);
+  --btn-color: #fff;
+  --btn-color-hover: var(--btn-color);
+  --btn-border: transparent;
+  --btn-ring: rgba(47, 111, 78, 0.35);
+
+  /* size tokens (overridden by size modifiers) */
+  --btn-px: 1.5rem;
+  --btn-py: 0.6rem;
+  --btn-font-size: 0.9375rem;
+
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: none;
-  transition: all ease 0.3s;
+  gap: 0.5rem;
+  padding: var(--btn-py) var(--btn-px);
+  font-size: var(--btn-font-size);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--btn-color);
+  background-color: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-md);
+  transition: var(--transition-base);
 }
 
+.btn-base:hover {
+  background-color: var(--btn-bg-hover);
+  color: var(--btn-color-hover);
+}
+
+.btn-base:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--btn-ring);
+}
+
+.btn-base:active {
+  transform: translateY(1px);
+}
+
+.btn-base:disabled,
+.btn-base.is-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ---------- Variants ---------- */
 .btn-base.btn-submit {
-  color: white;
-  background-color: #1D4ED8;
-  --ring-color: #93C5FD;
+  /* uses the defaults: brand green */
 }
 
-.btn-submit:focus {
-  box-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+.btn-base.btn-outline {
+  --btn-bg: var(--color-surface);
+  --btn-bg-hover: var(--color-brand-tint);
+  --btn-color: var(--color-ink);
+  --btn-color-hover: var(--color-brand-dark);
+  --btn-border: var(--color-line);
+  --btn-ring: rgba(29, 42, 36, 0.15);
 }
 
-.btn-submit:hover {
-  background-color: #1E40AF;
+.btn-base.btn-ghost {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--color-brand-tint);
+  --btn-color: var(--color-brand);
+  --btn-color-hover: var(--color-brand-dark);
+}
+
+.btn-base.btn-danger {
+  --btn-bg: var(--color-urgent);
+  --btn-bg-hover: var(--color-urgent-dark);
+  --btn-ring: rgba(184, 67, 58, 0.35);
+}
+
+/* ---------- Sizes ---------- */
+.btn-base.btn-sm {
+  --btn-px: 0.9rem;
+  --btn-py: 0.35rem;
+  --btn-font-size: 0.8125rem;
+}
+
+.btn-base.btn-lg {
+  --btn-px: 2rem;
+  --btn-py: 0.8rem;
+  --btn-font-size: 1.0625rem;
+}
+
+/* ---------- Layout helper ---------- */
+.btn-base.btn-block {
+  display: flex;
+  width: 100%;
 }
 
 /* ================================
@@ -39,7 +139,7 @@
 ================================ */
 
 .app-content {
-    margin-left: 240px;
+  margin-left: 240px;
 }
 
 .sidebar {
@@ -277,3 +377,88 @@
 
   border-radius: 10px;
 }
+
+/* MenuTab.css — uses variables from theme.css */
+
+.menu-tab .ant-tabs-nav {
+  margin-bottom: 1.25rem;
+}
+
+.menu-tab .ant-tabs-tab {
+  padding: 0.65rem 0;
+  font-weight: 600;
+  color: var(--color-ink-soft, #5B685F);
+}
+
+.menu-tab .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 1.75rem;
+}
+
+.menu-tab .ant-tabs-tab:hover {
+  color: var(--color-brand, #2F6F4E);
+}
+
+.menu-tab .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-brand, #2F6F4E);
+  font-weight: 700;
+}
+
+.menu-tab .ant-tabs-ink-bar {
+  background: var(--color-brand, #2F6F4E);
+  height: 2px;
+}
+
+.menu-tab .ant-tabs-nav::before {
+  border-bottom-color: var(--color-line, #DEDACE);
+}
+
+.menu-tab__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.menu-tab__badge .ant-badge-count {
+  background: var(--color-brand-tint, #E4EEE7);
+  color: var(--color-brand-dark, #234F38);
+  box-shadow: none;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* ---------- Pill variant ---------- */
+.menu-tab--pill .ant-tabs-nav::before {
+  display: none;
+}
+
+.menu-tab--pill .ant-tabs-ink-bar {
+  display: none;
+}
+
+.menu-tab--pill .ant-tabs-tab {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md, 0.5rem);
+  transition: all 0.2s ease;
+}
+
+.menu-tab--pill .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 0.4rem;
+}
+
+.menu-tab--pill .ant-tabs-tab:hover {
+  background: var(--color-brand-tint, #E4EEE7);
+}
+
+.menu-tab--pill .ant-tabs-tab.ant-tabs-tab-active {
+  background: var(--color-brand, #2F6F4E);
+}
+
+.menu-tab--pill .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #fff;
+}
+
+.menu-tab--pill .ant-tabs-tab.ant-tabs-tab-active .menu-tab__badge .ant-badge-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+};
+

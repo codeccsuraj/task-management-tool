@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from './routes/auth/auth.routes.js';
 import cors from 'cors'
 import { corsConfig } from './config/cors.config.js';
+import userRoutes from './routes/user/user.routes.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes)
+app.use("/api/v1/user", userRoutes)
 
 // Health check
 app.get("/", (req, res) => {

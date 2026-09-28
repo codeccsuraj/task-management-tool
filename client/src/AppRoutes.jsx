@@ -8,6 +8,8 @@ const Login = lazy(() => import("./features/auth/Login"));
 const Register = lazy(() => import("./features/auth/Register"));
 const Home = lazy(() => import("./pages/home/Home"));
 
+const UserProfile = lazy(() => import("./pages/user/UserProfile"));
+
 const PageLoader = () => (
     <div className="page-loader">
         <p>Loading...</p>
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <Home />,
+            },
+            {
+                path: '/profile/:id',
+                element: <UserProfile />,
             },
         ],
     },

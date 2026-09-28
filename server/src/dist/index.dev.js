@@ -15,6 +15,8 @@ var _cors = _interopRequireDefault(require("cors"));
 
 var _corsConfig = require("./config/cors.config.js");
 
+var _userRoutes = _interopRequireDefault(require("./routes/user/user.routes.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var app = (0, _express["default"])(); // Middlewares
@@ -25,7 +27,8 @@ app.use(_express["default"].urlencoded({
   extended: true
 }));
 app.use((0, _cookieParser["default"])());
-app.use("/api/v1/auth", _authRoutes["default"]); // Health check
+app.use("/api/v1/auth", _authRoutes["default"]);
+app.use("/api/v1/user", _userRoutes["default"]); // Health check
 
 app.get("/", function (req, res) {
   res.status(200).json({

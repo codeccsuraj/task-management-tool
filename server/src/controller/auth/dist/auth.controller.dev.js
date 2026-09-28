@@ -8,8 +8,7 @@ exports.logout = exports.loginAuth = exports.createAuth = void 0;
 var _authService = require("../../service/auth/auth.service.js");
 
 var createAuth = function createAuth(req, res) {
-  var data, _result;
-
+  var data, result;
   return regeneratorRuntime.async(function createAuth$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -20,23 +19,23 @@ var createAuth = function createAuth(req, res) {
           return regeneratorRuntime.awrap(_authService.authService.create(data));
 
         case 4:
-          _result = _context.sent;
+          result = _context.sent;
 
-          if (_result.success) {
+          if (result.success) {
             _context.next = 7;
             break;
           }
 
-          return _context.abrupt("return", res.status(_result.status).json({
+          return _context.abrupt("return", res.status(result.status).json({
             success: false,
-            message: _result.message
+            message: result.message
           }));
 
         case 7:
           ;
 
-          if (_result.success) {
-            res.cookie("accessToken", _result.data.token, {
+          if (result.success) {
+            res.cookie("accessToken", result.data.token, {
               httpOnly: true,
               secure: false,
               sameSite: "lax",
@@ -44,11 +43,11 @@ var createAuth = function createAuth(req, res) {
             });
           }
 
-          return _context.abrupt("return", res.status(_result.status).json({
+          return _context.abrupt("return", res.status(result.status).json({
             success: true,
-            message: _result.message,
+            message: result.message,
             data: {
-              user: _result.data.user
+              user: result.data.user
             }
           }));
 
@@ -72,8 +71,7 @@ var createAuth = function createAuth(req, res) {
 exports.createAuth = createAuth;
 
 var loginAuth = function loginAuth(req, res) {
-  var data, _result2;
-
+  var data, result;
   return regeneratorRuntime.async(function loginAuth$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
@@ -84,23 +82,23 @@ var loginAuth = function loginAuth(req, res) {
           return regeneratorRuntime.awrap(_authService.authService.login(data));
 
         case 4:
-          _result2 = _context2.sent;
+          result = _context2.sent;
 
-          if (_result2.success) {
+          if (result.success) {
             _context2.next = 7;
             break;
           }
 
-          return _context2.abrupt("return", res.status(_result2.status).json({
+          return _context2.abrupt("return", res.status(result.status).json({
             success: false,
-            message: _result2.message
+            message: result.message
           }));
 
         case 7:
           ;
 
-          if (_result2.success) {
-            res.cookie("accessToken", _result2.data.token, {
+          if (result.success) {
+            res.cookie("accessToken", result.data.token, {
               httpOnly: true,
               secure: false,
               sameSite: "lax",
@@ -108,11 +106,11 @@ var loginAuth = function loginAuth(req, res) {
             });
           }
 
-          return _context2.abrupt("return", res.status(_result2.status).json({
+          return _context2.abrupt("return", res.status(result.status).json({
             success: true,
-            message: _result2.message,
+            message: result.message,
             data: {
-              user: _result2.data.user
+              user: result.data.user
             }
           }));
 
@@ -146,7 +144,7 @@ var logout = function logout(req, res) {
             secure: false,
             sameSite: "lax"
           });
-          return _context3.abrupt("return", res.status(result.status).json({
+          return _context3.abrupt("return", res.status(200).json({
             success: true,
             message: "Logged out successfully"
           }));

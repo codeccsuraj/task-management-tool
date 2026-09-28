@@ -82,7 +82,7 @@ export const logout = async (req, res) => {
             sameSite: "lax",
         });
 
-        return res.status(result.status).json({
+        return res.status(200).json({
             success: true,
             message: "Logged out successfully",
         });
