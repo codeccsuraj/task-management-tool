@@ -23,6 +23,11 @@ const navItems = [
         path: "/sprints",
     },
     {
+        key: "team",
+        label: "Team",
+        path: "/team",
+    },
+    {
         key: "reports",
         label: "Reports",
         path: "/reports",

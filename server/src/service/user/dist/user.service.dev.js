@@ -54,7 +54,7 @@ function () {
                   authId: id
                 }
               }, {
-                "new": true,
+                returnDocument: "after",
                 upsert: true,
                 runValidators: true
               }));
@@ -85,6 +85,76 @@ function () {
           }
         }
       }, null, null, [[0, 10]]);
+    }
+  }, {
+    key: "getUserByAuthId",
+    value: function getUserByAuthId(id) {
+      var user;
+      return regeneratorRuntime.async(function getUserByAuthId$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+
+              if (!(!id || id.trim() === "")) {
+                _context2.next = 3;
+                break;
+              }
+
+              return _context2.abrupt("return", {
+                status: 400,
+                success: false,
+                message: "Provide valid credentials to get user data"
+              });
+
+            case 3:
+              _context2.next = 5;
+              return regeneratorRuntime.awrap(_userModel["default"].findOne({
+                authId: id
+              }).populate({
+                path: "authId"
+              }).lean());
+
+            case 5:
+              user = _context2.sent;
+
+              if (user) {
+                _context2.next = 8;
+                break;
+              }
+
+              return _context2.abrupt("return", {
+                status: 404,
+                success: false,
+                message: "User profile not found",
+                data: null
+              });
+
+            case 8:
+              return _context2.abrupt("return", {
+                status: 200,
+                success: true,
+                message: "User data fetched successfully",
+                data: user
+              });
+
+            case 11:
+              _context2.prev = 11;
+              _context2.t0 = _context2["catch"](0);
+              console.error("Error fetching user document:", _context2.t0);
+              return _context2.abrupt("return", {
+                status: 500,
+                success: false,
+                message: "Failed to fetch user data",
+                error: _context2.t0.message
+              });
+
+            case 15:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, null, null, [[0, 11]]);
     }
   }]);
 

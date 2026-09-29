@@ -25,6 +25,12 @@ var authSchema = new _mongoose["default"].Schema({
     required: true,
     minlength: 4
   },
+  parentId: {
+    type: _mongoose["default"].Schema.Types.ObjectId,
+    ref: "Auth",
+    "default": null,
+    index: true
+  },
   last_login: {
     type: Date,
     "default": null

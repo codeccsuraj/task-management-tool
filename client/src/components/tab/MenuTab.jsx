@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react'
-import PropTypes from 'prop-types'
-import { Tabs, Badge } from 'antd'
-import { useSearchParams } from 'react-router-dom'
-
+import React, { useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
+import { Badge, Tabs } from "antd";
+import { useSearchParams } from "react-router-dom";
 
 const MenuTab = ({
     items,
@@ -10,49 +9,107 @@ const MenuTab = ({
     defaultActiveKey,
     onChange,
     urlParam,
-    variant = 'line',
-    size = 'middle',
+    variant = "line",
+    size = "middle",
     extra,
     destroyInactive = false,
-    className = '',
+    className = "",
 }) => {
-    const [searchParams, setSearchParams] = useSearchParams()
-    const firstKey = items.find((i) => !i.disabled)?.key
-    const [innerKey, setInnerKey] = useState(defaultActiveKey ?? firstKey)
-    // Resolve the current key: controlled > url > internal state
-    const urlKey = urlParam ? searchParams.get(urlParam) : null
-    const validUrlKey = items.some((i) => i.key === urlKey) ? urlKey : null
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const currentKey = activeKey ?? validUrlKey ?? innerKey
+    const firstKey = items.find((item) => !item.disabled)?.key;
+
+    const [innerKey, setInnerKey] = useState(
+        defaultActiveKey ?? firstKey
+    );
+
+    const urlKey = urlParam
+        ? searchParams.get(urlParam)
+        : null;
+
+    const validUrlKey = items.some(
+        (item) => item.key === urlKey && !item.disabled
+    )
+        ? urlKey
+        : null;
+
+    const currentKey =
+        activeKey ??
+        validUrlKey ??
+        innerKey ??
+        firstKey;
+
+    useEffect(() => {
+        const exists = items.some(
+            (item) => item.key === innerKey && !item.disabled
+        );
+
+        if (!exists) {
+            setInnerKey(firstKey);
+        }
+    }, [items, innerKey, firstKey]);
 
     const handleChange = (key) => {
-        if (activeKey === undefined) setInnerKey(key)
-        if (urlParam) {
-            const next = new URLSearchParams(searchParams)
-            next.set(urlParam, key)
-            setSearchParams(next, { replace: true })
+        if (activeKey === undefined) {
+            setInnerKey(key);
         }
-        onChange?.(key)
-    }
+
+        if (urlParam) {
+            const nextParams = new URLSearchParams(searchParams);
+
+            nextParams.set(urlParam, key);
+
+            setSearchParams(nextParams, {
+                replace: true,
+            });
+        }
+
+        onChange?.(key);
+    };
 
     const antItems = useMemo(
         () =>
-            items.map(({ key, label, icon, count, disabled, content }) => ({
-                key,
-                disabled,
-                label: (
-                    <span className="menu-tab__label">
-                        {icon}
-                        {label}
-                        {count !== undefined && (
-                            <Badge count={count} showZero overflowCount={99} className="menu-tab__badge" />
-                        )}
-                    </span>
-                ),
-                children: content,
-            })),
+            items.map(
+                ({
+                    key,
+                    label,
+                    icon,
+                    count,
+                    disabled,
+                    content,
+                }) => ({
+                    key,
+                    disabled,
+
+                    label: (
+                        <span className="menu-tab__label">
+                            {icon && (
+                                <span className="menu-tab__icon">
+                                    {icon}
+                                </span>
+                            )}
+
+                            <span className="menu-tab__text">
+                                {label}
+                            </span>
+
+                            {count !== undefined && (
+                                <Badge
+                                    count={count}
+                                    showZero
+                                    overflowCount={99}
+                                    className="menu-tab__badge"
+                                />
+                            )}
+                        </span>
+                    ),
+
+                    children: content,
+                })
+            ),
         [items]
-    )
+    );
+
     return (
         <Tabs
             className={`menu-tab menu-tab--${variant} ${className}`}
@@ -64,11 +121,9 @@ const MenuTab = ({
             destroyOnHidden={destroyInactive}
             type="line"
         />
-    )
-}
+    );
+};
 
-
-export default MenuTab
 MenuTab.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
@@ -80,13 +135,31 @@ MenuTab.propTypes = {
             content: PropTypes.node,
         })
     ).isRequired,
+
     activeKey: PropTypes.string,
+
     defaultActiveKey: PropTypes.string,
+
     onChange: PropTypes.func,
+
     urlParam: PropTypes.string,
-    variant: PropTypes.oneOf(['line', 'pill']),
-    size: PropTypes.oneOf(['small', 'middle', 'large']),
+
+    variant: PropTypes.oneOf([
+        "line",
+        "pill",
+    ]),
+
+    size: PropTypes.oneOf([
+        "small",
+        "middle",
+        "large",
+    ]),
+
     extra: PropTypes.node,
+
     destroyInactive: PropTypes.bool,
+
     className: PropTypes.string,
-}
+};
+
+export default MenuTab;

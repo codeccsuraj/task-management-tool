@@ -20,5 +20,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var userRoutes = _express["default"].Router();
 
 userRoutes.post('/add-user/:id', user.upsertByAuthId);
+userRoutes.get('/get-user/:id', user.getUserByAuthId);
 var _default = userRoutes;
 exports["default"] = _default;

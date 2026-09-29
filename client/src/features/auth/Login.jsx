@@ -14,7 +14,7 @@ import { setUser } from './slice/authSlice'
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [login, { isLoading }] = useLoginMutation()
+    const [login, { isLoading }] = useLoginMutation();
 
     const formik = useFormik({
         initialValues: {

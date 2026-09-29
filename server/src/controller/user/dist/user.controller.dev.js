@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.upsertByAuthId = void 0;
+exports.getUserByAuthId = exports.upsertByAuthId = void 0;
 
 var _userService = require("../../service/user/user.service.js");
 
@@ -41,3 +41,37 @@ var upsertByAuthId = function upsertByAuthId(req, res) {
 };
 
 exports.upsertByAuthId = upsertByAuthId;
+
+var getUserByAuthId = function getUserByAuthId(req, res) {
+  var id, result;
+  return regeneratorRuntime.async(function getUserByAuthId$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          id = req.params.id;
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(_userService.userService.getUserByAuthId(id));
+
+        case 4:
+          result = _context2.sent;
+          return _context2.abrupt("return", res.status(result.status).json(result));
+
+        case 8:
+          _context2.prev = 8;
+          _context2.t0 = _context2["catch"](0);
+          console.error("getUserByAuthId error:", _context2.t0);
+          return _context2.abrupt("return", res.status(500).json({
+            success: false,
+            message: "Something went wrong while getting data"
+          }));
+
+        case 12:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 8]]);
+};
+
+exports.getUserByAuthId = getUserByAuthId;

@@ -20,7 +20,7 @@ class UserServices {
                     },
                 },
                 {
-                    new: true,
+                    returnDocument: "after",
                     upsert: true,
                     runValidators: true,
                 }
@@ -39,6 +39,50 @@ class UserServices {
                 status: 500,
                 success: false,
                 message: "Failed to save user document",
+                error: error.message,
+            };
+        }
+    }
+
+    async getUserByAuthId(id) {
+        try {
+            if (!id || id.trim() === "") {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Provide valid credentials to get user data",
+                };
+            }
+
+            const user = await UserModel
+                .findOne({ authId: id })
+                .populate({
+                    path: "authId",
+                })
+                .lean();
+
+            if (!user) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "User profile not found",
+                    data: null,
+                };
+            }
+
+            return {
+                status: 200,
+                success: true,
+                message: "User data fetched successfully",
+                data: user,
+            };
+        } catch (error) {
+            console.error("Error fetching user document:", error);
+
+            return {
+                status: 500,
+                success: false,
+                message: "Failed to fetch user data",
                 error: error.message,
             };
         }

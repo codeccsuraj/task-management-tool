@@ -18,6 +18,13 @@ const authSchema = new mongoose.Schema(
             minlength: 4,
         },
 
+        parentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Auth",
+            default: null,
+            index: true,
+        },
+
         last_login: {
             type: Date,
             default: null,
