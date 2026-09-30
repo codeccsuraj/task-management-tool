@@ -9,6 +9,7 @@ const Register = lazy(() => import("./features/auth/Register"));
 const Home = lazy(() => import("./pages/home/Home"));
 
 const UserProfile = lazy(() => import("./pages/user/UserProfile"));
+const UserList = lazy(() => import("./pages/user/UserList"));
 
 const PageLoader = () => (
     <div className="page-loader">
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
             {
                 path: '/profile/:id',
                 element: <UserProfile />,
+            },
+            {
+                path: '/team',
+                element: <UserList />,
             },
         ],
     },

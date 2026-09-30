@@ -17,7 +17,7 @@ const FieldWrapper = ({
                     {label}
 
                     {required && (
-                        <span className="required-mark">*</span>
+                        <sup className="text-danger">*</sup>
                     )}
                 </label>
             )}

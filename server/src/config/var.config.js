@@ -5,10 +5,12 @@ dotenv.config();
 class Config {
     #mongo_uri;
     #server_port;
+    #jwt_secret;
 
     constructor() {
         this.#mongo_uri = process.env.MONGO_URI;
         this.#server_port = process.env.SERVER_PORT;
+        this.#jwt_secret = process.env.JWT_SECRET;
     }
 
     get MongoURI() {
@@ -17,6 +19,10 @@ class Config {
 
     get ServerPort() {
         return this.#server_port
+    }
+
+    get JwtSecret() {
+        return this.#jwt_secret
     }
 }
 

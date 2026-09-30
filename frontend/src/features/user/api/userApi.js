@@ -10,18 +10,35 @@ const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ["User"]
         }),
-        upsertByAuthId: builder.mutation({
-            query: ({ id, data }) => ({
-                url: `/user/add-user/${id}`,
+        createUser: builder.mutation({
+            query: (data) => ({
+                url: `/user/create-user`,
                 method: "POST",
                 body: data,
             }),
             invalidatesTags: ["Auth", "User"]
+        }),
+        upsertByAuthId: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `/user/upsert-user/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["Auth", "User"]
+        }),
+        getUsers: builder.query({
+            query: () => ({
+                url: `/user/get-users`,
+                method: "GET",
+            }),
+            invalidatesTags: ["User"]
         }),
     })
 });
 
 export const {
     useUpsertByAuthIdMutation,
-    useGetUserByAuthIdQuery
+    useCreateUserMutation,
+    useGetUserByAuthIdQuery,
+    useGetUsersQuery
 } = userApi;

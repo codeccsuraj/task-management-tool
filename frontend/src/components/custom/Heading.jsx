@@ -1,8 +1,8 @@
 import React from 'react'
 
 const Heading = ({
-    title,
-    subtitle
+    title = "",
+    subtitle = ""
 }) => {
     return (
         <div className='d-flex flex-column'>

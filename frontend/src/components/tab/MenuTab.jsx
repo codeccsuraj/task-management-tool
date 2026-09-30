@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import { Badge, Tabs } from "antd";
 import { useSearchParams } from "react-router-dom";
 
@@ -122,44 +121,6 @@ const MenuTab = ({
             type="line"
         />
     );
-};
-
-MenuTab.propTypes = {
-    items: PropTypes.arrayOf(
-        PropTypes.shape({
-            key: PropTypes.string.isRequired,
-            label: PropTypes.node.isRequired,
-            icon: PropTypes.node,
-            count: PropTypes.number,
-            disabled: PropTypes.bool,
-            content: PropTypes.node,
-        })
-    ).isRequired,
-
-    activeKey: PropTypes.string,
-
-    defaultActiveKey: PropTypes.string,
-
-    onChange: PropTypes.func,
-
-    urlParam: PropTypes.string,
-
-    variant: PropTypes.oneOf([
-        "line",
-        "pill",
-    ]),
-
-    size: PropTypes.oneOf([
-        "small",
-        "middle",
-        "large",
-    ]),
-
-    extra: PropTypes.node,
-
-    destroyInactive: PropTypes.bool,
-
-    className: PropTypes.string,
 };
 
 export default MenuTab;
