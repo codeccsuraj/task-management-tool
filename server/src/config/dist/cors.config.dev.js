@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.corsConfig = void 0;
 var corsConfig = {
-  origin: "http://localhost:3000",
+  origin: "http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
