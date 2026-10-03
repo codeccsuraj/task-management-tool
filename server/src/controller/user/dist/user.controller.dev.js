@@ -46,23 +46,24 @@ var createUser = function createUser(req, res) {
 exports.createUser = createUser;
 
 var getUsers = function getUsers(req, res) {
-  var token, user, result;
+  var token, query, user, result;
   return regeneratorRuntime.async(function getUsers$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
           token = req.cookies.accessToken;
+          query = req.query;
           user = (0, _jwt.decodeToken)(token);
-          _context2.next = 5;
-          return regeneratorRuntime.awrap(_userService.userService.getUsers(user.id));
+          _context2.next = 6;
+          return regeneratorRuntime.awrap(_userService.userService.getUsers(user.id, query));
 
-        case 5:
+        case 6:
           result = _context2.sent;
           return _context2.abrupt("return", res.status(result.status).json(result));
 
-        case 9:
-          _context2.prev = 9;
+        case 10:
+          _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
           console.error("UserController getUsers error:", _context2.t0);
           return _context2.abrupt("return", res.status(500).json({
@@ -70,12 +71,12 @@ var getUsers = function getUsers(req, res) {
             message: "Something went wrong while adding data"
           }));
 
-        case 13:
+        case 14:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[0, 10]]);
 };
 
 exports.getUsers = getUsers;

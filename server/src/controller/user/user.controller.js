@@ -24,9 +24,9 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
     try {
         const token = req.cookies.accessToken;
-
+        const query = req.query;
         const user = decodeToken(token);
-        const result = await userService.getUsers(user.id);
+        const result = await userService.getUsers(user.id, query);
 
         return res.status(result.status).json(result)
     } catch (error) {

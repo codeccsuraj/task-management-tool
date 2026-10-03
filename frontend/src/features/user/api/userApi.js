@@ -27,9 +27,10 @@ const userApi = baseApi.injectEndpoints({
             invalidatesTags: ["Auth", "User"]
         }),
         getUsers: builder.query({
-            query: () => ({
+            query: (query) => ({
                 url: `/user/get-users`,
                 method: "GET",
+                params: query
             }),
             invalidatesTags: ["User"]
         }),

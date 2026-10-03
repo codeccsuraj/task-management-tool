@@ -2,6 +2,11 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
 var _mongoose = _interopRequireWildcard(require("mongoose"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
@@ -11,37 +16,43 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var projectMemberDocumentSchema = new _mongoose["default"].Schema({
   project: {
     type: _mongoose.Schema.Types.ObjectId,
-    ref: 'Project',
+    ref: "Project",
     required: true
   },
   user: {
     type: _mongoose.Schema.Types.ObjectId,
-    ref: 'Auth',
+    ref: "Auth",
     required: true
   },
   role: {
     type: String,
-    "enum": ['admin', 'lead', 'member'],
-    "default": 'member'
+    "enum": ["admin", "lead", "member"],
+    "default": "member"
   },
   status: {
     type: String,
-    "enum": ['active', 'invited', 'removed'],
-    "default": 'invited'
+    "enum": ["active", "invited", "removed"],
+    "default": "invited"
   },
   invitedBy: {
     type: _mongoose.Schema.Types.ObjectId,
-    ref: 'Auth'
+    ref: "Auth"
   },
   joinedAt: {
     type: Date
   }
 }, {
   timestamps: true
-});
+}); // Prevent same user from being added twice to the same project
+
 projectMemberDocumentSchema.index({
   project: 1,
   user: 1
 }, {
   unique: true
 });
+
+var ProjectMemberModal = _mongoose["default"].model("ProjectMember", projectMemberDocumentSchema);
+
+var _default = ProjectMemberModal;
+exports["default"] = _default;

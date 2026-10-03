@@ -462,3 +462,11 @@
   color: #fff;
 };
 
+
+.description-editor .ql-container {
+    height: 350px;
+}
+
+.description-editor .ql-editor {
+    min-height: 350px;
+}

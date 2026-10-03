@@ -206,7 +206,7 @@ class UserServices {
         }
     }
 
-    async getUsers(parentId) {
+    async getUsers(parentId, query) {
         try {
             if (!mongoose.Types.ObjectId.isValid(parentId)) {
                 return {
@@ -216,42 +216,31 @@ class UserServices {
                 };
             }
 
+            const { page = 1, limit = 10 } = query;
+
             const parentObjectId = new mongoose.Types.ObjectId(parentId);
+            const skip = (page - 1) * limit;
+            // 1. Find all auth records having this parentId
+            const authUsers = await AuthModel
+                .find({ parentId: parentObjectId })
+                .select("_id")
+                .lean();
 
-            const users = await AuthModel.aggregate([
-                {
-                    $match: {
-                        parentId: parentObjectId,
-                    },
-                },
-
-                {
-                    $lookup: {
-                        from: "UserDocument",
-                        localField: "_id",
-                        foreignField: "authId",
-                        as: "user",
-                    },
-                },
-
-                {
-                    $unwind: {
-                        path: "$user",
-                        preserveNullAndEmptyArrays: true,
-                    },
-                },
-
-                {
-                    $project: {
-                        _id: 1,
-                        email: 1,
-                        parentId: 1,
-                        createdAt: 1,
-
-                        user: 1,
-                    },
-                },
-            ]);
+            const authIds = authUsers.map((auth) => auth._id);
+            // 2. Get total count
+            const totalRecords = await UserModel.countDocuments({
+                authId: { $in: authIds },
+            });
+            
+            const users = await UserModel
+                .find({
+                    authId: { $in: authIds }
+                })
+                .populate("authId")
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 })
+                .lean();
 
             if (!users || users?.length === 0) {
                 return {
@@ -266,7 +255,17 @@ class UserServices {
                 status: 200,
                 success: true,
                 message: "Users fetched successfully",
-                data: users,
+                data: {
+                    users,
+                    pagination: {
+                        currentPage: page,
+                        limit,
+                        totalRecords,
+                        totalPages: Math.ceil(totalRecords / limit),
+                        hasNextPage: page < Math.ceil(totalRecords / limit),
+                        hasPreviousPage: page > 1,
+                    },
+                },
             };
         } catch (error) {
             console.error("Get users error:", error);

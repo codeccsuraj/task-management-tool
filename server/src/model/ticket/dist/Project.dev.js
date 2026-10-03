@@ -2,6 +2,11 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
 var _mongoose = _interopRequireWildcard(require("mongoose"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
@@ -28,7 +33,7 @@ var projectDocumentSchema = new _mongoose["default"].Schema({
   },
   owner: {
     type: _mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Auth',
     required: true
   },
   isArchived: {
@@ -38,8 +43,8 @@ var projectDocumentSchema = new _mongoose["default"].Schema({
 }, {
   timestamps: true
 });
-projectDocumentSchema.index({
-  key: 1
-}, {
-  unique: true
-});
+
+var ProjectModal = _mongoose["default"].model('Project', projectDocumentSchema);
+
+var _default = ProjectModal;
+exports["default"] = _default;

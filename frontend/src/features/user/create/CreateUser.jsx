@@ -14,10 +14,7 @@ const CreateUser = ({
     isOpen = false,
     onClose,
 }) => {
-    const [
-        createUser,
-        { isLoading },
-    ] = useCreateUserMutation();
+    const [createUser, { isLoading },] = useCreateUserMutation();
 
     const formik = useFormik({
         initialValues: {
@@ -65,15 +62,14 @@ const CreateUser = ({
         onClose?.();
     };
 
-    const isSubmitting =
-        formik.isSubmitting || isLoading;
+    const isSubmitting = formik.isSubmitting || isLoading;
 
     return (
         <Drawer
             title="Add team member"
             open={isOpen}
             onClose={handleClose}
-            width={550}
+            size={550}
             destroyOnHidden
             footer={
                 <div className="d-flex justify-content-end gap-3 py-1">
