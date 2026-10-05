@@ -13,6 +13,7 @@ const Home = () => {
     const authUser = useSelector((state) => state?.auth?.user);
     const [showAddForm, setShowAddForm] = useState(false)
     const authId = authUser?.id;
+    const isAdmin = authUser?.user_group === "ADMIN";
 
     const {
         data: userRes,
@@ -20,9 +21,7 @@ const Home = () => {
         skip: !authId,
     });
 
-    const {data : projectRes} = useGetMyProjectsQuery({page : 1, limit : 10})
-
-    console.log("projectRes", projectRes)
+    const { data: projectRes } = useGetMyProjectsQuery({ page: 1, limit: 10 })
 
     const userData = userRes?.data;
     const fullName = userData?.full_name || "User";
@@ -42,7 +41,7 @@ const Home = () => {
                     />
                 </div>
 
-                <ButtonInput
+                {isAdmin && <ButtonInput
                     type="button"
                     className="btn-submit px-4"
                     onClick={() => setShowAddForm(true)}
@@ -52,7 +51,7 @@ const Home = () => {
                             <ArrowRightOutlined />
                         </span>
                     }
-                />
+                />}
 
             </div>
 

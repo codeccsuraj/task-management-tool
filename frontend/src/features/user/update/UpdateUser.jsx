@@ -27,6 +27,7 @@ const UpdateUser = ({
             gender: userData?.gender || "",
             address: userData?.address || "",
             bio: userData?.bio || "",
+            user_group : "TEAM",
         },
         validationSchema: addUserSchemaValidation,
         onSubmit: async (values, { setSubmitting, resetForm }) => {

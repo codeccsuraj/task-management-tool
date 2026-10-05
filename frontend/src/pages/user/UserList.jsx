@@ -6,15 +6,18 @@ import Heading from "../../components/custom/Heading";
 import CreateUser from "../../features/user/create/CreateUser";
 import { useGetUsersQuery } from "../../features/user/api/userApi";
 import ButtonInput from "../../components/form/ButtonInput";
+import UpdateTeam from "../../features/user/update/UpdateTeam";
 
 const UserList = () => {
     const [showForm, setShowForm] = useState(false);
+    const [showUpdate, setShowUpdate] = useState(false);
 
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
     });
 
+    const [selectedUser, setSelectedUser] = useState(null)
     const { data, isLoading, isFetching, } = useGetUsersQuery({
         page: pagination.current,
         limit: pagination.pageSize,
@@ -59,6 +62,11 @@ const UserList = () => {
             "Team Member"
         );
     };
+
+    const handleViewProfile = (item) => {
+        setSelectedUser(item)
+        setShowUpdate(true)
+    }
 
     return (
         <div className="container-fluid">
@@ -205,6 +213,11 @@ const UserList = () => {
             <CreateUser
                 isOpen={showForm}
                 onClose={() => setShowForm(false)}
+            />
+            <UpdateTeam
+                isOpen={showUpdate}
+                onClose={() => setShowUpdate(false)}
+                prevData={selectedUser}
             />
 
         </div>

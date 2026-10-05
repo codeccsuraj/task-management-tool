@@ -38,3 +38,22 @@ export const getMyProjects = async (req, res) => {
         });
     }
 }
+
+export const getMemberProjects = async (req, res) => {
+    try {
+        const query = req.query;
+        const token = req.cookies.accessToken;
+        const user = decodeToken(token);
+
+        const result = await ticketService.getMemberProjects(user?.id);
+
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error("UserController getMyProjects error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while fetching data",
+        });
+    }
+}

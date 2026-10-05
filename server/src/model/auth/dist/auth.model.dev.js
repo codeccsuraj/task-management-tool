@@ -25,6 +25,10 @@ var authSchema = new _mongoose["default"].Schema({
     required: true,
     minlength: 4
   },
+  user_group: {
+    type: String,
+    required: false
+  },
   parentId: {
     type: _mongoose["default"].Schema.Types.ObjectId,
     ref: "Auth",

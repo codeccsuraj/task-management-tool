@@ -10,6 +10,7 @@ class UserServices {
             full_name,
             phone,
             role,
+            user_group
         } = payload;
 
         // ------------------------------------
@@ -73,6 +74,7 @@ class UserServices {
                 email: normalizedEmail,
                 password,
                 parentId: parentObjectId,
+                user_group
             });
 
             // ------------------------------------
@@ -116,6 +118,124 @@ class UserServices {
                 message: "Failed to create member",
             };
 
+        }
+    }
+
+    async updateUser(authId, payload) {
+        try {
+            const {
+                full_name,
+                role,
+                user_group,
+            } = payload;
+
+            // ------------------------------------
+            // Validate parent authId
+            // ------------------------------------
+
+            if (
+                !authId ||
+                !mongoose.Types.ObjectId.isValid(authId)
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Please provide a valid auth id",
+                };
+            }
+
+            const parentObjectId = new mongoose.Types.ObjectId(authId);
+
+            // ------------------------------------
+            // Find member Auth using parentId
+            // ------------------------------------
+
+            const memberAuth = await AuthModel.findOne({
+                parentId: parentObjectId,
+            });
+
+            if (!memberAuth) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "User not found",
+                };
+            }
+
+            // ------------------------------------
+            // Update member Auth
+            // ------------------------------------
+
+            const updatedAuth = await AuthModel.findOneAndUpdate(
+                {
+                    _id: memberAuth._id,
+                    parentId: parentObjectId,
+                },
+                {
+                    $set: {
+                        user_group,
+                    },
+                },
+                {
+                    returnDocument: "after",
+                    runValidators: true,
+                }
+            );
+
+            if (!updatedAuth) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "Auth user not found",
+                };
+            }
+
+            // ------------------------------------
+            // Update member UserDocument
+            // ------------------------------------
+
+            const updatedUser = await UserModel.findOneAndUpdate(
+                {
+                    authId: memberAuth._id,
+                },
+                {
+                    $set: {
+                        full_name,
+                        role,
+                    },
+                },
+                {
+                    returnDocument: "after",
+                    runValidators: true,
+                }
+            );
+
+            if (!updatedUser) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "User document not found",
+                };
+            }
+
+            // ------------------------------------
+            // Success
+            // ------------------------------------
+
+            return {
+                status: 200,
+                success: true,
+                message: "User updated successfully",
+            };
+
+        } catch (error) {
+            console.error("Update member error:", error);
+
+            return {
+                status: 500,
+                success: false,
+                message: "Failed to update member",
+            };
         }
     }
 
@@ -231,7 +351,7 @@ class UserServices {
             const totalRecords = await UserModel.countDocuments({
                 authId: { $in: authIds },
             });
-            
+
             const users = await UserModel
                 .find({
                     authId: { $in: authIds }

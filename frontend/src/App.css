@@ -142,240 +142,367 @@
   margin-left: 240px;
 }
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* =========================================
+   Sidebar
+========================================= */
 
-  width: 240px;
-  height: 100vh;
+.app-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
 
-  display: flex;
-  flex-direction: column;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
 
-  padding: 20px 14px;
+    height: 100vh;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+    z-index: 1000;
 
-  z-index: 1000;
+    background: #212529 !important;
 
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 
-/* ================================
+/* =========================================
    Brand
-================================ */
+========================================= */
 
 .sidebar-brand {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 
-  gap: 10px;
+    gap: 10px;
 
-  padding: 4px 8px 24px;
+    padding: 20px 22px 24px;
 }
 
 .brand-logo {
-  width: 34px;
-  height: 34px;
+    width: 34px;
+    height: 34px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  border-radius: 8px;
+    flex-shrink: 0;
 
-  background: #198754;
+    border-radius: 8px;
 
-  color: white;
+    background: #198754;
 
-  font-size: 15px;
-  font-weight: 700;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .brand-name {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    letter-spacing: 0.2px;
 }
 
 
-/* ================================
+/* =========================================
    Section
-================================ */
+========================================= */
 
 .sidebar-section-title {
-  padding: 0 10px;
+    padding: 0 22px;
 
-  margin-bottom: 8px;
+    margin-bottom: 8px;
 
-  color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.45);
 
-  font-size: 11px;
-  font-weight: 600;
+    font-size: 11px;
+    font-weight: 600;
 
-  text-transform: uppercase;
+    text-transform: uppercase;
 
-  letter-spacing: 0.8px;
+    letter-spacing: 0.8px;
 }
 
 
-/* ================================
-   Navigation
-================================ */
+/* =========================================
+   Ant Design Menu
+========================================= */
 
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
+.app-sidebar .ant-menu {
+    background: transparent !important;
 
-  gap: 4px;
-}
+    border-inline-end: none !important;
 
-.sidebar-link {
-  position: relative;
+    color: rgba(255, 255, 255, 0.6);
 
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  min-height: 42px;
-
-  padding: 10px 12px;
-
-  border-radius: 8px;
-
-  color: rgba(255, 255, 255, 0.6);
-
-  text-decoration: none;
-
-  font-size: 14px;
-  font-weight: 500;
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.sidebar-link:hover {
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.sidebar-link-active {
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-link-active:hover {
-  background: rgba(255, 255, 255, 0.12);
+    padding: 0 14px;
 }
 
 
-/* ================================
-   Active Indicator
-================================ */
+/* =========================================
+   Main Menu Items
+========================================= */
 
-.sidebar-indicator {
-  width: 6px;
-  height: 6px;
+.app-sidebar .ant-menu-item,
+.app-sidebar .ant-menu-submenu-title {
+    height: 42px;
 
-  flex-shrink: 0;
+    line-height: 42px;
 
-  border-radius: 50%;
+    margin: 4px 0 !important;
 
-  background: rgba(255, 255, 255, 0.25);
+    padding-inline: 12px !important;
 
-  transition: background-color 0.2s ease;
+    border-radius: 8px;
+
+    color: rgba(255, 255, 255, 0.6);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
-.sidebar-indicator-active {
-  background: #198754;
+
+/* Hover */
+
+.app-sidebar .ant-menu-item:hover,
+.app-sidebar .ant-menu-submenu-title:hover {
+    color: #fff !important;
+
+    background: rgba(255, 255, 255, 0.06) !important;
 }
 
 
-/* ================================
+/* Active */
+
+.app-sidebar .ant-menu-item-selected {
+    color: #fff !important;
+
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* Active item hover */
+
+.app-sidebar .ant-menu-item-selected:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+
+/* =========================================
+   Menu Icons
+========================================= */
+
+.app-sidebar .ant-menu-item .ant-menu-item-icon,
+.app-sidebar .ant-menu-submenu-title .ant-menu-item-icon {
+    color: rgba(255, 255, 255, 0.5);
+
+    font-size: 16px;
+}
+
+.app-sidebar .ant-menu-item-selected .ant-menu-item-icon {
+    color: #198754 !important;
+}
+
+
+/* =========================================
+   Sub Menu
+========================================= */
+
+.app-sidebar .ant-menu-sub {
+    background: transparent !important;
+
+    padding: 2px 0 4px !important;
+}
+
+
+/* Project child items */
+
+.app-sidebar .ant-menu-sub .ant-menu-item {
+    height: 36px;
+
+    line-height: 36px;
+
+    margin: 2px 0 !important;
+
+    padding-left: 44px !important;
+
+    border-radius: 7px;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* Project hover */
+
+.app-sidebar .ant-menu-sub .ant-menu-item:hover {
+    color: #fff !important;
+
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+
+/* Project active */
+
+.app-sidebar .ant-menu-sub .ant-menu-item-selected {
+    color: #fff !important;
+
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* =========================================
+   Submenu Arrow
+========================================= */
+
+.app-sidebar .ant-menu-submenu-arrow {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.app-sidebar .ant-menu-submenu-open
+    > .ant-menu-submenu-title
+    .ant-menu-submenu-arrow {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =========================================
+   Project Icon
+========================================= */
+
+.project-menu-icon {
+    width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 5px;
+
+    background: rgba(255, 255, 255, 0.1);
+
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================
    Bottom User
-================================ */
-
-.sidebar-bottom {
-  margin-top: auto;
-
-  padding-top: 20px;
-}
+========================================= */
 
 .sidebar-user {
-  display: flex;
-  align-items: center;
+    position: absolute;
 
-  gap: 10px;
+    bottom: 0;
+    left: 0;
 
-  padding: 10px;
+    width: 100%;
 
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px 20px;
+
+    background: #212529;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+
+/* Avatar */
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
+    width: 34px;
+    height: 34px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  flex-shrink: 0;
+    flex-shrink: 0;
 
-  border-radius: 50%;
+    border-radius: 50%;
 
-  background: #495057;
+    background: #495057;
 
-  font-size: 13px;
-  font-weight: 600;
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
 
-  min-width: 0;
+/* User information */
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
 }
 
 .user-name {
-  color: #fff;
+    color: #fff;
 
-  font-size: 13px;
-  font-weight: 600;
+    font-size: 13px;
+    font-weight: 600;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .user-role {
-  margin-top: 2px;
+    margin-top: 2px;
 
-  color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.45);
 
-  font-size: 11px;
+    font-size: 11px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
-/* ================================
+/* =========================================
    Sidebar Scrollbar
-================================ */
+========================================= */
 
-.sidebar::-webkit-scrollbar {
-  width: 5px;
+.app-sidebar::-webkit-scrollbar {
+    width: 5px;
 }
 
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
+.app-sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+.app-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
 
-  border-radius: 10px;
+    border-radius: 10px;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* MenuTab.css — uses variables from theme.css */

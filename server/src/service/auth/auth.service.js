@@ -38,9 +38,8 @@ class AuthService {
                 data: {
                     user: {
                         id: result._id,
-                        name: result.name,
                         email: result.email,
-                        role: result.role,
+                        user_group: result.user_group,
                     },
                     token: generatedToken,
                 },
@@ -92,9 +91,8 @@ class AuthService {
                 data: {
                     user: {
                         id: user._id,
-                        name: user.name,
                         email: user.email,
-                        role: user.role,
+                        user_group: user.user_group,
                     },
                     token: generatedToken,
                 },

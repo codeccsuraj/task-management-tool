@@ -18,6 +18,11 @@ const authSchema = new mongoose.Schema(
             minlength: 4,
         },
 
+        user_group: {
+            type: String,
+            required: false,
+        },
+
         parentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Auth",

@@ -4,7 +4,7 @@ const ticketApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         createProject: builder.mutation({
             query: (data) => ({
-                url: '/ticket/get-project',
+                url: '/ticket/create-project',
                 method: "POSt",
                 body: data
             }),
@@ -18,10 +18,18 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Tickets"]
         }),
+        getTeamProjects: builder.query({
+            query: () => ({
+                url: '/ticket/get-member-projects',
+                method: "GET",
+            }),
+            providesTags: ["Tickets"]
+        }),
     })
 });
 
 export const {
     useCreateProjectMutation,
     useGetMyProjectsQuery,
+    useGetTeamProjectsQuery
 } = ticketApi;

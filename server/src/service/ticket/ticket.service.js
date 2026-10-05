@@ -200,6 +200,110 @@ class TicketServices {
             };
         }
     }
+
+    async getMemberProjects(authId) {
+        try {
+            // ------------------------------------
+            // Validate authId
+            // ------------------------------------
+            if (
+                !authId ||
+                !mongoose.Types.ObjectId.isValid(authId)
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Please provide a valid auth id",
+                };
+            }
+
+            const projects = await ProjectMemberModal.aggregate([
+                // ------------------------------------
+                // Get memberships of current user
+                // ------------------------------------
+                {
+                    $match: {
+                        user: new mongoose.Types.ObjectId(authId),
+                        status: { $in: ["active", "invited"] },
+                    },
+                },
+
+                // ------------------------------------
+                // Get project details
+                // ------------------------------------
+                {
+                    $lookup: {
+                        from: "projects",
+                        localField: "project",
+                        foreignField: "_id",
+                        as: "project",
+                    },
+                },
+
+                {
+                    $unwind: "$project",
+                },
+
+                // ------------------------------------
+                // Don't return archived projects
+                // ------------------------------------
+                {
+                    $match: {
+                        "project.isArchived": false,
+                    },
+                },
+
+                // ------------------------------------
+                // Return required fields
+                // ------------------------------------
+                {
+                    $project: {
+                        _id: 0,
+
+                        projectId: "$project._id",
+                        name: "$project.name",
+                        key: "$project.key",
+                        description: "$project.description",
+                        owner: "$project.owner",
+                        isArchived: "$project.isArchived",
+                        createdAt: "$project.createdAt",
+                        updatedAt: "$project.updatedAt",
+
+                        membership: {
+                            role: "$role",
+                            status: "$status",
+                            invitedBy: "$invitedBy",
+                            joinedAt: "$joinedAt",
+                        },
+                    },
+                },
+
+                // ------------------------------------
+                // Latest projects first
+                // ------------------------------------
+                {
+                    $sort: {
+                        createdAt: -1,
+                    },
+                },
+            ]);
+
+            return {
+                status: 200,
+                success: true,
+                message: "Projects fetched successfully",
+                data: projects,
+            };
+        } catch (error) {
+            console.error("Get My Projects Error:", error);
+
+            return {
+                status: 500,
+                success: false,
+                message: "Something went wrong while fetching projects",
+            };
+        }
+    }
 };
 
 export const ticketService = new TicketServices();

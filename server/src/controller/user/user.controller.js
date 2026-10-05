@@ -57,6 +57,26 @@ export const upsertByAuthId = async (req, res) => {
     }
 };
 
+export const updateUser = async (req, res) => {
+    try {
+        const token = req.cookies.accessToken;
+
+        const user = decodeToken(token);
+        const data = req.body;
+
+        const result = await userService.updateUser(user?.id, data);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Logout controller error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while adding data",
+        });
+    }
+};
+
 export const getUserByAuthId = async (req, res) => {
     try {
         const { id } = req.params;

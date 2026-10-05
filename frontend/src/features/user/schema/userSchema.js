@@ -58,4 +58,14 @@ export const createUserSchemaValidation = Yup.object({
         .required("Password is required"),
 });
 
+export const updateUserSchemaValidation = Yup.object({
+    full_name: Yup.string()
+        .trim()
+        .required("Full name is required"),
+
+    role: Yup.string()
+        .trim()
+        .required("Job title is required"),
+});
+
 

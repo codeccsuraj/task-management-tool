@@ -1,109 +1,188 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Layout, Menu } from "antd";
+import {
+    DashboardOutlined,
+    AppstoreOutlined,
+    UnorderedListOutlined,
+    TeamOutlined,
+    BarChartOutlined,
+} from "@ant-design/icons";
 
-const navItems = [
-    {
-        key: "overview",
-        label: "Overview",
-        path: "/",
-    },
-    {
-        key: "board",
-        label: "Sprint Board",
-        path: "/board",
-    },
-    {
-        key: "backlog",
-        label: "Backlog",
-        path: "/backlog",
-    },
-    {
-        key: "sprints",
-        label: "Sprints",
-        path: "/sprints",
-    },
-    {
-        key: "team",
-        label: "Team",
-        path: "/team",
-    },
-    {
-        key: "reports",
-        label: "Reports",
-        path: "/reports",
-    },
-];
+import { useGetTeamProjectsQuery } from "../../features/ticket/api/ticketApi";
+
+const { Sider } = Layout;
 
 const Sidebar = () => {
-    return (
-        <aside className="sidebar bg-dark text-white">
+    const user = useSelector((state) => state.auth.user);
+    const location = useLocation();
+    const navigate = useNavigate();
 
-            {/* Brand */}
+    const { data: projectRes, isLoading } =
+        useGetTeamProjectsQuery();
+
+    const projects = projectRes?.data || [];
+
+    const userGroup = user?.user_group;
+
+    // ------------------------------------
+    // Dynamic Project Children
+    // ------------------------------------
+
+    const projectChildren = projects.map((project) => ({
+        key: `/board/${project.key}`,
+
+        label: project.name,
+
+        icon: (
+            <span
+                style={{
+                    width: 20,
+                    height: 20,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 4,
+                    background: "#f0f0f0",
+                    color: "#555",
+                    fontSize: 10,
+                    fontWeight: 600,
+                }}
+            >
+                {project.key?.charAt(0)}
+            </span>
+        ),
+    }));
+
+    // ------------------------------------
+    // Menu Items
+    // ------------------------------------
+
+    const menuItems = [
+        {
+            key: "/",
+            icon: <DashboardOutlined />,
+            label: "Overview",
+        },
+
+        {
+            key: "/board",
+            icon: <AppstoreOutlined />,
+            label: "Sprint Board",
+            children: isLoading
+                ? [
+                    {
+                        key: "loading",
+                        label: "Loading projects...",
+                        disabled: true,
+                    },
+                ]
+                : projectChildren.length
+                    ? projectChildren
+                    : [
+                        {
+                            key: "no-projects",
+                            label: "No projects",
+                            disabled: true,
+                        },
+                    ],
+        },
+
+        {
+            key: "/backlog",
+            icon: <UnorderedListOutlined />,
+            label: "Backlog",
+        },
+
+        {
+            key: "/sprints",
+            icon: <AppstoreOutlined />,
+            label: "Sprints",
+        },
+
+        ...(userGroup === "ADMIN"
+            ? [
+                {
+                    key: "/team",
+                    icon: <TeamOutlined />,
+                    label: "Team",
+                },
+                {
+                    key: "/reports",
+                    icon: <BarChartOutlined />,
+                    label: "Reports",
+                },
+            ]
+            : []),
+    ];
+
+    // ------------------------------------
+    // Find Active Menu
+    // ------------------------------------
+
+    const selectedKey =
+        projectChildren.find((item) =>
+            location.pathname.startsWith(item.key)
+        )?.key || location.pathname;
+
+    // ------------------------------------
+    // Open Sprint Board automatically
+    // ------------------------------------
+
+    const isProjectBoard = location.pathname.startsWith("/board/");
+
+    const defaultOpenKeys = isProjectBoard
+        ? ["/board"]
+        : [];
+
+    // ------------------------------------
+    // Render
+    // ------------------------------------
+
+    return (
+        <Sider
+            width={240}
+            theme="dark"
+            className="app-sidebar"
+        >
             <div className="sidebar-brand">
-                <div className="brand-logo">
-                    T
-                </div>
+                <div className="brand-logo">T</div>
 
                 <span className="brand-name">
                     Trackline
                 </span>
             </div>
 
-            {/* Navigation title */}
             <div className="sidebar-section-title">
                 Workspace
             </div>
 
-            {/* Navigation */}
-            <nav className="sidebar-nav">
-                {navItems.map((item) => (
-                    <NavLink
-                        key={item.key}
-                        to={item.path}
-                        end={item.path === "/"}
-                        className={({ isActive }) =>
-                            `sidebar-link ${isActive ? "sidebar-link-active" : ""
-                            }`
-                        }
-                    >
-                        {({ isActive }) => (
-                            <>
-                                <span
-                                    className={`sidebar-indicator ${isActive
-                                            ? "sidebar-indicator-active"
-                                            : ""
-                                        }`}
-                                />
+            <Menu
+                theme="dark"
+                mode="inline"
+                items={menuItems}
+                selectedKeys={[selectedKey]}
+                defaultOpenKeys={defaultOpenKeys}
+                onClick={({ key }) => navigate(key)}
+            />
 
-                                <span>
-                                    {item.label}
-                                </span>
-                            </>
-                        )}
-                    </NavLink>
-                ))}
-            </nav>
+            <div className="sidebar-user">
+                <div className="user-avatar">
+                    {user?.full_name?.charAt(0)?.toUpperCase() || "S"}
+                </div>
 
-            {/* Bottom */}
-            <div className="sidebar-bottom">
-                <div className="sidebar-user">
-                    <div className="user-avatar">
-                        S
-                    </div>
+                <div className="user-info">
+                    <span className="user-name">
+                        {user?.full_name || "User"}
+                    </span>
 
-                    <div className="user-info">
-                        <span className="user-name">
-                            Suraj
-                        </span>
-
-                        <span className="user-role">
-                            Developer
-                        </span>
-                    </div>
+                    <span className="user-role">
+                        {user?.role || "Developer"}
+                    </span>
                 </div>
             </div>
-
-        </aside>
+        </Sider>
     );
 };
 

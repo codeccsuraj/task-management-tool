@@ -23,6 +23,7 @@ const CreateUser = ({
             phone: "",
             role: "",
             password: "",
+            user_group : "TEAM"
         },
 
         validationSchema: createUserSchemaValidation,
