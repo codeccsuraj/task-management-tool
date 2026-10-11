@@ -597,3 +597,7 @@
 .description-editor .ql-editor {
     min-height: 350px;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

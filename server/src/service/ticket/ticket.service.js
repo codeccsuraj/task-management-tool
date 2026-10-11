@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import ProjectModal from "../../model/ticket/Project.js";
 import ProjectMemberModal from "../../model/ticket/ProjectMember.js";
+import SprintModal from "../../model/ticket/Sprint.js";
 
 class TicketServices {
     async generateProjectKey(name) {
@@ -301,6 +302,75 @@ class TicketServices {
                 status: 500,
                 success: false,
                 message: "Something went wrong while fetching projects",
+            };
+        }
+    }
+
+    async createSprint(data) {
+        try {
+            const result = await SprintModal.create(data);
+
+            if (!result) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Failed to add sprint"
+                }
+            }
+
+            return {
+                status: 201,
+                success: true,
+                message: "Sprint created successfully",
+                data: result,
+            };
+        } catch (error) {
+            console.error("Create Sprint Error:", error);
+            return {
+                status: 500,
+                success: false,
+                message: error.message || "Something went wrong while creating sprint",
+            };
+        }
+    }
+
+    async getProjectTeam(projectId) {
+        try {
+            if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Invalid project ID',
+                };
+            }
+            const members = await ProjectMemberModal.find({
+                project: projectId,
+                status: { $in: ['active', 'invited'] },
+            }).populate({
+                path: 'user',
+                select: 'email',
+            }).populate({
+                path: 'invitedBy',
+                select: 'email',
+            }).sort({ createdAt: -1 }).lean();
+
+            return {
+                status: 200,
+                success: true,
+                message: 'Project team fetched successfully',
+                data: {
+                    project,
+                    members,
+                    total: members.length,
+                },
+            };
+        } catch (error) {
+            console.error('Get Team Error:', error);
+
+            return {
+                status: 500,
+                success: false,
+                message: 'Something went wrong while fetching project team',
             };
         }
     }

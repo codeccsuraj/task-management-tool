@@ -5,6 +5,8 @@ const ticketRoutes = express.Router();
 
 ticketRoutes.post("/create-project", ticket.createProject)
 ticketRoutes.get("/get-projects", ticket.getMyProjects)
-ticketRoutes.get("/get-member-projects", ticket.getMemberProjects)
+ticketRoutes.get("/get-member/:projectId", ticket.getProjectTeam)
+
+ticketRoutes.post("/create-sprint", ticket.createSprint)
 
 export default ticketRoutes;

@@ -10,4 +10,9 @@ const sprintDocumentSchema = new mongoose.Schema({
     completedAt: { type: Date },
 }, { timestamps: true })
 
-sprintDocumentSchema.index({ project: 1, status: 1 })
+const SprintModal = mongoose.model(
+    "Sprint",
+    sprintDocumentSchema
+);
+
+export default SprintModal;

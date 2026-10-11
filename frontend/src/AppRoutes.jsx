@@ -11,6 +11,7 @@ const Home = lazy(() => import("./pages/home/Home"));
 const UserProfile = lazy(() => import("./pages/user/UserProfile"));
 const UserList = lazy(() => import("./pages/user/UserList"));
 const Board = lazy(() => import("./pages/ticket-management/sprint/Board"));
+const Sprint = lazy(() => import("./pages/ticket-management/sprint/Sprint"));
 
 const PageLoader = () => (
     <div className="page-loader">
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: '/board/:project',
                 element: <Board />,
+            },
+            {
+                path: '/sprints',
+                element: <Sprint />,
             },
         ],
     },

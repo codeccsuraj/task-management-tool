@@ -86,13 +86,6 @@ const Header = () => {
                     />
                 </div>
 
-                <button
-                    type="button"
-                    className="btn btn-success btn-sm fw-semibold"
-                >
-                    + New ticket
-                </button>
-
                 {/* User dropdown */}
                 <Dropdown
                     menu={{ items, onClick: onMenuClick }}
