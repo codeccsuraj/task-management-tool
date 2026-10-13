@@ -57,6 +57,25 @@ export const getMemberProjects = async (req, res) => {
     }
 }
 
+export const createTicket = async (req, res) => {
+    try {
+        const token = req.cookies.accessToken;
+        const user = decodeToken(token);
+        const data = req.body;
+
+        const result = await ticketService.createTicket(data, user?.id);
+
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error("UserController createTicket error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while creating data",
+        });
+    }
+}
+
 export const createSprint = async (req, res) => {
     try {
         const data = req.body;
@@ -72,10 +91,39 @@ export const createSprint = async (req, res) => {
     }
 }
 
+export const getSprintByProjectId = async (req, res) => {
+    try {
+        const { projectKey } = req.params;
+        const result = await ticketService.getSprintByProjectId(projectKey);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Create Sprint Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating sprint",
+        })
+    }
+}
 export const getProjectTeam = async (req, res) => {
     try {
         const { projectId } = req.params;
         const result = await ticketService.getProjectTeam(projectId);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Create Sprint Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating sprint",
+        })
+    }
+}
+
+export const getTicketByProjectId = async (req, res) => {
+    try {
+        const query = req.query;
+        const result = await ticketService.getTicketByProjectId(query);
 
         return res.status(result.status).json(result)
     } catch (error) {

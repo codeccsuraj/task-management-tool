@@ -40,6 +40,29 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Tickets"]
         }),
+        getSprintByProjectId: builder.query({
+            query: (key) => ({
+                url: `/ticket/get-projects-sprint/${key}`,
+                method: "GET",
+            }),
+            providesTags: ["Sprint"]
+        }),
+        createTicket: builder.mutation({
+            query: (data) => ({
+                url: `/ticket/create-ticket`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["Tickets"]
+        }),
+        getTicketByProjectId: builder.query({
+            query: (data) => ({
+                url: `/ticket/get-tickets`,
+                method: "GET",
+                params: data,
+            }),
+            providesTags: ["Tickets"]
+        }),
     })
 });
 
@@ -49,4 +72,7 @@ export const {
     useGetMyProjectsQuery,
     useGetTeamProjectsQuery,
     useGetProjectTeamQuery,
+    useGetSprintByProjectIdQuery,
+    useCreateTicketMutation,
+    useGetTicketByProjectIdQuery,
 } = ticketApi;

@@ -9,6 +9,6 @@ const projectDocumentSchema = new mongoose.Schema({
     isArchived: { type: Boolean, default: false },
 }, { timestamps: true });
 
-const ProjectModal = mongoose.model('Project', projectDocumentSchema)
+const ProjectModal = mongoose.model('Project', projectDocumentSchema);
 
 export default ProjectModal;

@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import ProjectModal from "../../model/ticket/Project.js";
 import ProjectMemberModal from "../../model/ticket/ProjectMember.js";
 import SprintModal from "../../model/ticket/Sprint.js";
+import TicketModel from "../../model/ticket/Ticket.js";
+import TicketHistoryModal from "../../model/ticket/TicketHistory.js";
 
 class TicketServices {
     async generateProjectKey(name) {
@@ -334,6 +336,65 @@ class TicketServices {
         }
     }
 
+    async getSprintByProjectId(projectKey) {
+        try {
+            // Validate project ID
+            if (
+                !projectKey ||
+                typeof projectKey !== 'string' ||
+                projectKey.trim() === ""
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Please provide a valid project id',
+                };
+            }
+
+            const getProjectId = await ProjectModal.findOne({ key: projectKey });
+
+            if (!getProjectId) {
+                return {
+                    status: 200,
+                    success: true,
+                    message: 'No sprints found for this project',
+                };
+            }
+
+            // Fetch sprints associated with the project
+            const sprints = await SprintModal.find({
+                project: getProjectId._id,
+            })
+                .populate('project', 'name key')
+                .sort({ createdAt: -1 })
+                .lean();
+
+            // Check if sprints exist
+            if (!sprints.length) {
+                return {
+                    status: 200,
+                    success: true,
+                    message: 'No sprints found for this project',
+                };
+            }
+
+            return {
+                status: 200,
+                success: true,
+                message: 'Sprints fetched successfully',
+                data: sprints,
+            };
+        } catch (error) {
+            console.error('Get Sprint By Project ID Error:', error);
+
+            return {
+                status: 500,
+                success: false,
+                message: error.message || 'Something went wrong while fetching sprints',
+            };
+        }
+    }
+
     async getProjectTeam(projectId) {
         try {
             if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
@@ -371,6 +432,268 @@ class TicketServices {
                 status: 500,
                 success: false,
                 message: 'Something went wrong while fetching project team',
+            };
+        }
+    }
+
+
+    async createTicket(data, authUser) {
+        try {
+            // 1. Validate authenticated user
+            if (
+                !authUser ||
+                typeof authUser !== 'string' ||
+                !mongoose.Types.ObjectId.isValid(authUser)
+            ) {
+                return {
+                    status: 401,
+                    success: false,
+                    message: 'Unauthorized user',
+                };
+            }
+
+            // 2. Validate project key
+            if (
+                !data?.project ||
+                typeof data.project !== 'string' ||
+                !data.project.trim()
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Project key is required',
+                };
+            }
+
+            // 3. Find project using its key (e.g. TMT)
+            const existingProject = await ProjectModal.findOne({
+                key: data.project.trim().toUpperCase(),
+            })
+                .select('_id key')
+                .lean();
+
+            if (!existingProject) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: 'Project not found',
+                };
+            }
+
+            // 4. Atomically increment ticket sequence
+            const project = await ProjectModal.findByIdAndUpdate(
+                existingProject._id,
+                {
+                    $inc: { ticketSequence: 1 },
+                },
+                {
+                    returnDocument: 'after',
+                    runValidators: true,
+                }
+            )
+                .select('_id key ticketSequence')
+                .lean();
+
+            if (!project) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: 'Project not found',
+                };
+            }
+
+            // 5. Generate readable ticket ID
+            const ticketId = `${project.key}-${project.ticketSequence}`;
+
+            // 6. Prepare ticket payload
+            const {
+                project: _projectKey,
+                reporter: _reporter,
+                ticketId: _ticketId,
+                ...ticketData
+            } = data;
+
+            const payload = {
+                ...ticketData,
+                project: project._id,
+                reporter: new mongoose.Types.ObjectId(authUser),
+                ticketId,
+            };
+
+            // 7. Create ticket
+            const createdTicket = await TicketModel.create(payload);
+
+            // 8. Record ticket creation history
+            const history = await TicketHistoryModal.create({
+                ticket: createdTicket._id,
+                project: project._id,
+                actor: new mongoose.Types.ObjectId(authUser),
+                eventType: 'ticket_created',
+                field: null,
+                oldValue: null,
+                newValue: {
+                    ticketId: createdTicket.ticketId,
+                    title: createdTicket.title,
+                    status: createdTicket.status,
+                    priority: createdTicket.priority,
+                    type: createdTicket.type,
+                },
+                message: `Created ticket ${createdTicket.ticketId}: ${createdTicket.title}`,
+                metadata: {
+                    ticketId: createdTicket.ticketId,
+                    source: 'ticket_creation',
+                },
+            });
+
+            return {
+                status: 201,
+                success: true,
+                message: 'Ticket created successfully',
+                data: {
+                    ticket: createdTicket,
+                    history,
+                },
+            };
+        } catch (error) {
+            console.error('Create Ticket Error:', {
+                message: error.message,
+                name: error.name,
+                errors: error.errors,
+            });
+
+            return {
+                status: error.name === 'ValidationError' ||
+                    error.name === 'CastError'
+                    ? 400
+                    : 500,
+                success: false,
+                message:
+                    error.message ||
+                    'Something went wrong while creating ticket',
+            };
+        }
+    }
+
+    async getTicketByProjectId(query) {
+        try {
+            const {
+                projectKey,
+                page = 1,
+                limit = 10,
+                status,
+                priority,
+                type,
+                search,
+            } = query;
+
+            // 1. Validate project key
+            if (
+                !projectKey ||
+                typeof projectKey !== 'string' ||
+                !projectKey.trim()
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Please provide a valid project key',
+                };
+            }
+
+            // 2. Validate pagination
+            const currentPage = Math.max(1, Number.parseInt(page, 10) || 1);
+            const pageSize = Math.min(
+                100,
+                Math.max(1, Number.parseInt(limit, 10) || 10)
+            );
+            const skip = (currentPage - 1) * pageSize;
+
+            // 3. Find project by key
+            const project = await ProjectModal.findOne({
+                key: projectKey.trim().toUpperCase(),
+            })
+                .select('_id key name')
+                .lean();
+
+            if (!project) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: 'Project not found',
+                };
+            }
+
+            // 4. Build ticket filters
+            const filter = {
+                project: project._id,
+            };
+
+            if (status) filter.status = status;
+            if (priority) filter.priority = priority;
+            if (type) filter.type = type;
+
+            // 5. Search by ticket ID or title
+            if (typeof search === 'string' && search.trim()) {
+                const escapedSearch = search
+                    .trim()
+                    .slice(0, 100)
+                    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                filter.$or = [
+                    {
+                        ticketId: {
+                            $regex: escapedSearch,
+                            $options: 'i',
+                        },
+                    },
+                    {
+                        title: {
+                            $regex: escapedSearch,
+                            $options: 'i',
+                        },
+                    },
+                ];
+            }
+
+            // 6. Fetch tickets and total count concurrently
+            const [tickets, total] = await Promise.all([
+                TicketModel.find(filter)
+                    .sort({ createdAt: -1, _id: -1 })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .lean(),
+
+                TicketModel.countDocuments(filter),
+            ]);
+
+            // 7. Return response
+            return {
+                status: 200,
+                success: true,
+                message: 'Tickets fetched successfully',
+                data: {
+                    project: {
+                        _id: project._id,
+                        key: project.key,
+                        name: project.name,
+                    },
+                    tickets,
+                    pagination: {
+                        page: currentPage,
+                        limit: pageSize,
+                        total,
+                        totalPages: Math.ceil(total / pageSize),
+                        hasNextPage: currentPage * pageSize < total,
+                        hasPrevPage: currentPage > 1,
+                    },
+                },
+            };
+        } catch (error) {
+            console.error('Get Tickets By Project Error:', error);
+
+            return {
+                status: 500,
+                success: false,
+                message: 'Something went wrong while fetching project tickets',
             };
         }
     }
