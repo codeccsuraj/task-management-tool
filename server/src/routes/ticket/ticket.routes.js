@@ -13,5 +13,6 @@ ticketRoutes.post("/create-sprint", ticket.createSprint)
 ticketRoutes.post("/create-ticket", ticket.createTicket)
 
 ticketRoutes.get("/get-tickets", ticket.getTicketByProjectId)
+ticketRoutes.get("/get-ticket/:ticketId", ticket.getTicketById)
 
 export default ticketRoutes;

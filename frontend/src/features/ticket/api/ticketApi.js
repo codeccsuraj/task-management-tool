@@ -63,6 +63,13 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Tickets"]
         }),
+        getTicketById: builder.query({
+            query: (id) => ({
+                url: `/ticket/get-ticket/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["Tickets"]
+        }),
     })
 });
 
@@ -75,4 +82,5 @@ export const {
     useGetSprintByProjectIdQuery,
     useCreateTicketMutation,
     useGetTicketByProjectIdQuery,
+    useGetTicketByIdQuery
 } = ticketApi;

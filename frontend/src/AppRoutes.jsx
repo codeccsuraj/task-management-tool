@@ -12,6 +12,7 @@ const UserProfile = lazy(() => import("./pages/user/UserProfile"));
 const UserList = lazy(() => import("./pages/user/UserList"));
 const Board = lazy(() => import("./pages/ticket-management/sprint/Board"));
 const Sprint = lazy(() => import("./pages/ticket-management/sprint/Sprint"));
+const TicketDetail = lazy(() => import("./pages/ticket-management/TicketDetail"));
 
 const PageLoader = () => (
     <div className="page-loader">
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
             {
                 path: '/sprints',
                 element: <Sprint />,
+            },
+            {
+                path: '/ticket/:ticketId',
+                element: <TicketDetail />,
             },
         ],
     },

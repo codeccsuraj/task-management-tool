@@ -57,6 +57,15 @@ authSchema.methods.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };
 
+authSchema.virtual("user", {
+    ref: "UserDocument",
+    localField: "_id",
+    foreignField: "authId",
+    justOne: true,
+});
+authSchema.set("toObject", { virtuals: true });
+authSchema.set("toJSON", { virtuals: true });
+
 const AuthModel = mongoose.model("Auth", authSchema);
 
 export default AuthModel;

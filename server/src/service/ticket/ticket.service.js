@@ -4,6 +4,7 @@ import ProjectMemberModal from "../../model/ticket/ProjectMember.js";
 import SprintModal from "../../model/ticket/Sprint.js";
 import TicketModel from "../../model/ticket/Ticket.js";
 import TicketHistoryModal from "../../model/ticket/TicketHistory.js";
+import { populate } from "dotenv";
 
 class TicketServices {
     async generateProjectKey(name) {
@@ -658,6 +659,23 @@ class TicketServices {
             const [tickets, total] = await Promise.all([
                 TicketModel.find(filter)
                     .sort({ createdAt: -1, _id: -1 })
+                    .populate({
+                        path: "assigned",
+                        select: "email",
+                        populate: {
+                            path: "user",
+                            select: "full_name phone profile_picture",
+                        },
+                    })
+                    .populate({
+                        path: "reporter",
+                        select: "email",
+                        populate: {
+                            path: "user",
+                            select: "full_name phone profile_picture",
+                        },
+                    })
+                    .populate("sprint")
                     .skip(skip)
                     .limit(pageSize)
                     .lean(),
@@ -689,6 +707,63 @@ class TicketServices {
             };
         } catch (error) {
             console.error('Get Tickets By Project Error:', error);
+
+            return {
+                status: 500,
+                success: false,
+                message: 'Something went wrong while fetching project tickets',
+            };
+        }
+    }
+
+    async getTicketById(id) {
+        try {
+
+            // 1. Validate project key
+            if (
+                !id ||
+                typeof id !== 'string' ||
+                !id.trim()
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Please provide a valid ticket id',
+                };
+            }
+
+
+            // 6. Fetch tickets and total count concurrently
+            const ticket = await TicketModel.findOne({ ticketId: id })
+                .sort({ createdAt: -1, _id: -1 })
+                .populate({
+                    path: "assigned",
+                    select: "email",
+                    populate: {
+                        path: "user",
+                        select: "full_name phone profile_picture",
+                    },
+                })
+                .populate({
+                    path: "reporter",
+                    select: "email",
+                    populate: {
+                        path: "user",
+                        select: "full_name phone profile_picture",
+                    },
+                })
+                .populate("sprint")
+                .lean()
+
+            // 7. Return response
+            return {
+                status: 200,
+                success: true,
+                message: 'Ticket fetched successfully',
+                data: ticket,
+            };
+        } catch (error) {
+            console.error('Get Ticket By Ticket Error:', error);
 
             return {
                 status: 500,

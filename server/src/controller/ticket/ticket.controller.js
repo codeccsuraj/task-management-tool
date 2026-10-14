@@ -134,3 +134,18 @@ export const getTicketByProjectId = async (req, res) => {
         })
     }
 }
+
+export const getTicketById = async (req, res) => {
+    try {
+        const {ticketId} = req.params;
+        const result = await ticketService.getTicketById(ticketId);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Create Sprint Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating sprint",
+        })
+    }
+}
