@@ -147,24 +147,24 @@
 ========================================= */
 
 .app-sidebar {
-    position: fixed !important;
-    top: 0;
-    left: 0;
+  position: fixed !important;
+  top: 0;
+  left: 0;
 
-    width: 240px !important;
-    min-width: 240px !important;
-    max-width: 240px !important;
+  width: 240px !important;
+  min-width: 240px !important;
+  max-width: 240px !important;
 
-    height: 100vh;
+  height: 100vh;
 
-    z-index: 1000;
+  z-index: 1000;
 
-    background: #212529 !important;
+  background: #212529 !important;
 
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 
-    overflow-y: auto;
-    overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 
@@ -173,41 +173,41 @@
 ========================================= */
 
 .sidebar-brand {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    gap: 10px;
+  gap: 10px;
 
-    padding: 20px 22px 24px;
+  padding: 20px 22px 24px;
 }
 
 .brand-logo {
-    width: 34px;
-    height: 34px;
+  width: 34px;
+  height: 34px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    flex-shrink: 0;
+  flex-shrink: 0;
 
-    border-radius: 8px;
+  border-radius: 8px;
 
-    background: #198754;
+  background: #198754;
 
-    color: #fff;
+  color: #fff;
 
-    font-size: 15px;
-    font-weight: 700;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .brand-name {
-    color: #fff;
+  color: #fff;
 
-    font-size: 18px;
-    font-weight: 700;
+  font-size: 18px;
+  font-weight: 700;
 
-    letter-spacing: 0.2px;
+  letter-spacing: 0.2px;
 }
 
 
@@ -216,18 +216,18 @@
 ========================================= */
 
 .sidebar-section-title {
-    padding: 0 22px;
+  padding: 0 22px;
 
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 
-    color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.45);
 
-    font-size: 11px;
-    font-weight: 600;
+  font-size: 11px;
+  font-weight: 600;
 
-    text-transform: uppercase;
+  text-transform: uppercase;
 
-    letter-spacing: 0.8px;
+  letter-spacing: 0.8px;
 }
 
 
@@ -236,13 +236,13 @@
 ========================================= */
 
 .app-sidebar .ant-menu {
-    background: transparent !important;
+  background: transparent !important;
 
-    border-inline-end: none !important;
+  border-inline-end: none !important;
 
-    color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 
-    padding: 0 14px;
+  padding: 0 14px;
 }
 
 
@@ -252,24 +252,24 @@
 
 .app-sidebar .ant-menu-item,
 .app-sidebar .ant-menu-submenu-title {
-    height: 42px;
+  height: 42px;
 
-    line-height: 42px;
+  line-height: 42px;
 
-    margin: 4px 0 !important;
+  margin: 4px 0 !important;
 
-    padding-inline: 12px !important;
+  padding-inline: 12px !important;
 
-    border-radius: 8px;
+  border-radius: 8px;
 
-    color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 
@@ -277,25 +277,25 @@
 
 .app-sidebar .ant-menu-item:hover,
 .app-sidebar .ant-menu-submenu-title:hover {
-    color: #fff !important;
+  color: #fff !important;
 
-    background: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 
 
 /* Active */
 
 .app-sidebar .ant-menu-item-selected {
-    color: #fff !important;
+  color: #fff !important;
 
-    background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 
 /* Active item hover */
 
 .app-sidebar .ant-menu-item-selected:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 
@@ -305,13 +305,13 @@
 
 .app-sidebar .ant-menu-item .ant-menu-item-icon,
 .app-sidebar .ant-menu-submenu-title .ant-menu-item-icon {
-    color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .app-sidebar .ant-menu-item-selected .ant-menu-item-icon {
-    color: #198754 !important;
+  color: #198754 !important;
 }
 
 
@@ -320,46 +320,46 @@
 ========================================= */
 
 .app-sidebar .ant-menu-sub {
-    background: transparent !important;
+  background: transparent !important;
 
-    padding: 2px 0 4px !important;
+  padding: 2px 0 4px !important;
 }
 
 
 /* Project child items */
 
 .app-sidebar .ant-menu-sub .ant-menu-item {
-    height: 36px;
+  height: 36px;
 
-    line-height: 36px;
+  line-height: 36px;
 
-    margin: 2px 0 !important;
+  margin: 2px 0 !important;
 
-    padding-left: 44px !important;
+  padding-left: 44px !important;
 
-    border-radius: 7px;
+  border-radius: 7px;
 
-    font-size: 13px;
+  font-size: 13px;
 
-    color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 
 /* Project hover */
 
 .app-sidebar .ant-menu-sub .ant-menu-item:hover {
-    color: #fff !important;
+  color: #fff !important;
 
-    background: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 
 
 /* Project active */
 
 .app-sidebar .ant-menu-sub .ant-menu-item-selected {
-    color: #fff !important;
+  color: #fff !important;
 
-    background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 
@@ -368,13 +368,11 @@
 ========================================= */
 
 .app-sidebar .ant-menu-submenu-arrow {
-    color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 
-.app-sidebar .ant-menu-submenu-open
-    > .ant-menu-submenu-title
-    .ant-menu-submenu-arrow {
-    color: rgba(255, 255, 255, 0.7);
+.app-sidebar .ant-menu-submenu-open>.ant-menu-submenu-title .ant-menu-submenu-arrow {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 
@@ -383,22 +381,22 @@
 ========================================= */
 
 .project-menu-icon {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 
-    display: inline-flex;
+  display: inline-flex;
 
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-    border-radius: 5px;
+  border-radius: 5px;
 
-    background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 
-    color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.7);
 
-    font-size: 10px;
-    font-weight: 600;
+  font-size: 10px;
+  font-weight: 600;
 }
 
 
@@ -407,79 +405,79 @@
 ========================================= */
 
 .sidebar-user {
-    position: absolute;
+  position: absolute;
 
-    bottom: 0;
-    left: 0;
+  bottom: 0;
+  left: 0;
 
-    width: 100%;
+  width: 100%;
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    gap: 10px;
+  gap: 10px;
 
-    padding: 14px 20px;
+  padding: 14px 20px;
 
-    background: #212529;
+  background: #212529;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 
 /* Avatar */
 
 .user-avatar {
-    width: 34px;
-    height: 34px;
+  width: 34px;
+  height: 34px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    flex-shrink: 0;
+  flex-shrink: 0;
 
-    border-radius: 50%;
+  border-radius: 50%;
 
-    background: #495057;
+  background: #495057;
 
-    color: #fff;
+  color: #fff;
 
-    font-size: 13px;
-    font-weight: 600;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 
 /* User information */
 
 .user-info {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    min-width: 0;
+  min-width: 0;
 }
 
 .user-name {
-    color: #fff;
+  color: #fff;
 
-    font-size: 13px;
-    font-weight: 600;
+  font-size: 13px;
+  font-weight: 600;
 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-role {
-    margin-top: 2px;
+  margin-top: 2px;
 
-    color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.45);
 
-    font-size: 11px;
+  font-size: 11px;
 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
@@ -488,21 +486,21 @@
 ========================================= */
 
 .app-sidebar::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 .app-sidebar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .app-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .app-sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* MenuTab.css — uses variables from theme.css */
@@ -517,7 +515,7 @@
   color: var(--color-ink-soft, #5B685F);
 }
 
-.menu-tab .ant-tabs-tab + .ant-tabs-tab {
+.menu-tab .ant-tabs-tab+.ant-tabs-tab {
   margin-left: 1.75rem;
 }
 
@@ -568,7 +566,7 @@
   transition: all 0.2s ease;
 }
 
-.menu-tab--pill .ant-tabs-tab + .ant-tabs-tab {
+.menu-tab--pill .ant-tabs-tab+.ant-tabs-tab {
   margin-left: 0.4rem;
 }
 
@@ -587,17 +585,454 @@
 .menu-tab--pill .ant-tabs-tab.ant-tabs-tab-active .menu-tab__badge .ant-badge-count {
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
-};
+}
+
+;
 
 
 .description-editor .ql-container {
-    height: 350px;
+  height: 350px;
 }
 
 .description-editor .ql-editor {
-    min-height: 350px;
+  min-height: 350px;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.rich-text-editor {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rich-text-editor:focus-within {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.08);
+}
+
+.rich-text-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.rich-text-toolbar-active {
+  background: #e6f4ff !important;
+  color: #1677ff !important;
+}
+
+.rich-text-content {
+  min-height: var(--editor-min-height);
+  max-height: var(--editor-max-height);
+  overflow-y: auto;
+  padding: 14px 16px;
+  outline: none;
+  color: #262626;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* All images inside the editor */
+.rich-text-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 350px;
+  box-sizing: border-box;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Optional: spacing around images */
+.rich-text-content img + p,
+.rich-text-content p + img {
+    margin-top: 8px;
+}
+
+.rich-text-content p {
+  margin: 0 0 10px;
+}
+
+.rich-text-content h2,
+.rich-text-content h3,
+.rich-text-content h4 {
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 14px 0 8px;
+}
+
+.rich-text-content h2 {
+  font-size: 20px;
+}
+
+.rich-text-content h3 {
+  font-size: 17px;
+}
+
+.rich-text-content h4 {
+  font-size: 15px;
+}
+
+.rich-text-content ul,
+.rich-text-content ol {
+  padding-left: 24px;
+  margin: 8px 0 12px;
+}
+
+.rich-text-content blockquote {
+  border-left: 3px solid #d9d9d9;
+  padding-left: 12px;
+  margin: 12px 0;
+  color: #595959;
+}
+
+.rich-text-content code {
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-family: monospace;
+}
+
+.rich-text-content a {
+  color: #1677ff;
+  text-decoration: underline;
+}
+
+.rich-text-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #bfbfbf;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.rich-text-readonly {
+  background: #f5f5f5;
+}
+
+
+/* ==========================================================================
+   Ticket list - card, toolbar and compact antd table
+   Uses the theme variables from :root (brand, surface, ink, line, ...).
+   Everything is scoped to .ticket-card / .ticket-table so nothing else
+   in the app is affected. The extra `.ant-table-wrapper` in each selector
+   raises specificity so these rules beat antd's injected styles.
+   ========================================================================== */
+
+/* ---------- Card + toolbar (wraps the table) ---------- */
+
+.ticket-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.ticket-card .ticket-toolbar {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+/* ---------- Table base ---------- */
+
+.ant-table-wrapper.ticket-table {
+  --ticket-row-h: 40px;
+  font-size: 0.8125rem;
+  /* 13px */
+  color: var(--color-ink);
+}
+
+.ant-table-wrapper.ticket-table .ant-table {
+  background: transparent;
+  color: var(--color-ink);
+  font-size: inherit;
+}
+
+/* ---------- Header ---------- */
+
+.ant-table-wrapper.ticket-table .ant-table-thead>tr>th {
+  background: var(--color-brand);
+  color: #fff;
+  font-size: 0.75rem;
+  /* 12px */
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 0.875rem;
+  border-bottom: 1px solid var(--color-brand-dark);
+  white-space: nowrap;
+}
+
+/* round the header's top corners to match the card */
+.ant-table-wrapper.ticket-table .ant-table-thead>tr>th:first-child {
+  border-start-start-radius: 0;
+}
+
+.ant-table-wrapper.ticket-table .ant-table-thead>tr>th:last-child {
+  border-start-end-radius: 0;
+}
+
+/* remove antd's vertical divider between header cells */
+.ant-table-wrapper.ticket-table .ant-table-thead>tr>th::before {
+  display: none;
+}
+
+/* ---------- Body ---------- */
+
+.ant-table-wrapper.ticket-table .ant-table-tbody>tr>td {
+  padding: 0.4375rem 0.875rem;
+  height: var(--ticket-row-h);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
+  background: var(--color-surface);
+  transition: var(--transition-base);
+}
+
+.ant-table-wrapper.ticket-table .ant-table-tbody>tr:last-child>td {
+  border-bottom: 0;
+}
+
+.ant-table-wrapper.ticket-table .ant-table-tbody>tr.ant-table-row:hover>td,
+.ant-table-wrapper.ticket-table .ant-table-tbody>tr.ant-table-row>td.ant-table-cell-row-hover {
+  background: color-mix(in srgb, var(--color-brand-tint) 60%, var(--color-surface));
+}
+
+/* Links inside the table (ticket key + title) */
+.ant-table-wrapper.ticket-table .link {
+  color: var(--color-brand);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.ant-table-wrapper.ticket-table .link:hover {
+  color: var(--color-brand-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- Tags (status / priority) ---------- */
+
+.ant-table-wrapper.ticket-table .ant-tag {
+  margin: 0;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.375rem;
+  border: 0;
+  border-radius: 999px;
+}
+
+/* status */
+.ant-table-wrapper.ticket-table .ant-tag-success {
+  color: var(--color-brand-dark);
+  background: var(--color-brand-tint);
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-processing {
+  color: var(--color-progress);
+  background: color-mix(in srgb, var(--color-progress) 12%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-warning {
+  color: var(--color-amber);
+  background: color-mix(in srgb, var(--color-amber) 14%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-error {
+  color: var(--color-urgent);
+  background: color-mix(in srgb, var(--color-urgent) 12%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-default {
+  color: var(--color-ink-soft);
+  background: var(--color-bg);
+}
+
+/* priority */
+.ant-table-wrapper.ticket-table .ant-tag-red {
+  color: var(--color-urgent-dark);
+  background: color-mix(in srgb, var(--color-urgent) 14%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-volcano {
+  color: var(--color-urgent);
+  background: color-mix(in srgb, var(--color-urgent) 9%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-gold {
+  color: var(--color-amber);
+  background: color-mix(in srgb, var(--color-amber) 14%, var(--color-surface));
+}
+
+.ant-table-wrapper.ticket-table .ant-tag-green {
+  color: var(--color-brand-dark);
+  background: var(--color-brand-tint);
+}
+
+/* ---------- Empty + loading ---------- */
+
+.ant-table-wrapper.ticket-table .ant-empty {
+  margin: 1.5rem 0;
+  color: var(--color-ink-soft);
+}
+
+.ant-table-wrapper.ticket-table .ant-spin-dot-item {
+  background-color: var(--color-brand);
+}
+
+/* ---------- Pagination ---------- */
+
+.ant-table-wrapper.ticket-table .ant-pagination {
+  margin: 0;
+  padding: 0.625rem 1rem;
+  border-top: 1px solid var(--color-line);
+  background: var(--color-surface);
+  font-size: 0.8125rem;
+  color: var(--color-ink-soft);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item {
+  border-radius: var(--radius-md);
+  border-color: transparent;
+  min-width: 28px;
+  height: 28px;
+  line-height: 26px;
+  transition: var(--transition-base);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item a {
+  color: var(--color-ink);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item:hover {
+  background: var(--color-brand-tint);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item-active {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item-active a {
+  color: #fff;
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-item-active:hover {
+  background: var(--color-brand-dark);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+.ant-table-wrapper.ticket-table .ant-pagination .ant-pagination-next .ant-pagination-item-link {
+  border-radius: var(--radius-md);
+  color: var(--color-ink-soft);
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-select-selector {
+  border-radius: var(--radius-md) !important;
+  border-color: var(--color-line) !important;
+}
+
+.ant-table-wrapper.ticket-table .ant-pagination .ant-select-focused .ant-select-selector {
+  border-color: var(--color-brand) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand) 18%, transparent) !important;
+}
+
+/* ---------- Horizontal scroll bar ---------- */
+
+.ant-table-wrapper.ticket-table .ant-table-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+.ant-table-wrapper.ticket-table .ant-table-content::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ant-table-wrapper.ticket-table .ant-table-content::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 999px;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 575.98px) {
+
+  .ant-table-wrapper.ticket-table .ant-table-thead>tr>th,
+  .ant-table-wrapper.ticket-table .ant-table-tbody>tr>td {
+    padding-inline: 0.625rem;
+  }
+
+  .ant-table-wrapper.ticket-table .ant-pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+}
+
+.ticket-history {
+    width: 100%;
+    min-width: 0;
+}
+
+.ticket-history-timeline {
+    margin-top: 8px;
+}
+
+.ticket-history-timeline .ant-timeline-item {
+    padding-bottom: 24px;
+}
+
+.ticket-history-timeline .ant-timeline-item-tail {
+    inset-inline-start: 14px;
+}
+
+.ticket-history-timeline .ant-timeline-item-head-custom {
+    inset-inline-start: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.ticket-history-timeline .ant-timeline-item-content {
+    margin-inline-start: 42px;
+    min-height: 32px;
+    top: -3px;
+}
+
+.ticket-history-icon {
+    background: #f0f5ff;
+    color: #1677ff;
+    border: 1px solid #d6e4ff;
+    flex-shrink: 0;
+}
+
+.ticket-history-card {
+    padding: 14px 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ticket-history-card:hover {
+    border-color: #d6e4ff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+}
+
+@media (max-width: 576px) {
+    .ticket-history-card {
+        padding: 12px;
+    }
+
+    .ticket-history-timeline .ant-timeline-item-content {
+        margin-inline-start: 36px;
+    }
 }

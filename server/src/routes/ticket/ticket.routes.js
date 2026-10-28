@@ -12,7 +12,10 @@ ticketRoutes.get("/get-projects-sprint/:projectKey", ticket.getSprintByProjectId
 ticketRoutes.post("/create-sprint", ticket.createSprint)
 ticketRoutes.post("/create-ticket", ticket.createTicket)
 
-ticketRoutes.get("/get-tickets", ticket.getTicketByProjectId)
-ticketRoutes.get("/get-ticket/:ticketId", ticket.getTicketById)
+ticketRoutes.get("/get-tickets", ticket.getTicketByProjectId);
+ticketRoutes.get("/get-ticket/:ticketId", ticket.getTicketById);
+ticketRoutes.patch("/update-ticket", ticket.updateTicketFields);
+
+ticketRoutes.get("/get-history/:ticketId", ticket.getHistoryByTicketId);
 
 export default ticketRoutes;

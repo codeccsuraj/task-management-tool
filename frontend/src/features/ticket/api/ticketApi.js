@@ -55,6 +55,15 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Tickets"]
         }),
+        updateTicketFields: builder.mutation({
+            query: ({ ticketId, event, data }) => ({
+                url: `/ticket/update-ticket`,
+                method: "PATCH",
+                params: { ticketId, event },
+                body: data,
+            }),
+            invalidatesTags: ["Tickets"]
+        }),
         getTicketByProjectId: builder.query({
             query: (data) => ({
                 url: `/ticket/get-tickets`,
@@ -63,12 +72,26 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Tickets"]
         }),
+        getHistoryByTicketId: builder.query({
+            query: (ticketId) => ({
+                url: `/ticket/get-history/${ticketId}`,
+                method: "GET",
+            }),
+            providesTags: ["TicketHistory"]
+        }),
         getTicketById: builder.query({
             query: (id) => ({
                 url: `/ticket/get-ticket/${id}`,
                 method: "GET",
             }),
             providesTags: ["Tickets"]
+        }),
+        updateTicket: builder.mutation({
+            query: (id) => ({
+                url: `/ticket/get-ticket/${id}`,
+                method: "POST",
+            }),
+            providesTags: ["Tickets", "TicketHistory"]
         }),
     })
 });
@@ -81,6 +104,9 @@ export const {
     useGetProjectTeamQuery,
     useGetSprintByProjectIdQuery,
     useCreateTicketMutation,
+    useUpdateTicketFieldsMutation,
     useGetTicketByProjectIdQuery,
-    useGetTicketByIdQuery
+    useGetHistoryByTicketIdQuery,
+    useGetTicketByIdQuery,
+    useUpdateTicketMutation
 } = ticketApi;

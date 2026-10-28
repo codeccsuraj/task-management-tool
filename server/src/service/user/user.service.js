@@ -1,6 +1,7 @@
 import AuthModel from "../../model/auth/auth.model.js";
 import UserModel from "../../model/user/model/user.model.js";
 import mongoose from 'mongoose'
+import { ticketService } from "../ticket/ticket.service.js";
 
 class UserServices {
     async createUser(parentId, payload) {
@@ -308,11 +309,16 @@ class UserServices {
                 };
             }
 
+            const getTicketCounts = await ticketService.getTicketStatusCountsByAuthId(id)
+
             return {
                 status: 200,
                 success: true,
                 message: "User data fetched successfully",
-                data: user,
+                data: {
+                    ...user,
+                    tickets: getTicketCounts?.data
+                },
             };
         } catch (error) {
             console.error("Error fetching user document:", error);

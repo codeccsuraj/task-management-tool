@@ -7,7 +7,6 @@ import Heading from "../../components/custom/Heading";
 import ButtonInput from "../../components/form/ButtonInput";
 import { getDayGreetings } from "../../hook/generator";
 import AddProject from "../../features/ticket/create/AddProject";
-import { useGetMyProjectsQuery } from "../../features/ticket/api/ticketApi";
 
 const Home = () => {
     const authUser = useSelector((state) => state?.auth?.user);
@@ -20,8 +19,6 @@ const Home = () => {
     } = useGetUserByAuthIdQuery(authId, {
         skip: !authId,
     });
-
-    const { data: projectRes } = useGetMyProjectsQuery({ page: 1, limit: 10 })
 
     const userData = userRes?.data;
     const fullName = userData?.full_name || "User";
@@ -83,7 +80,9 @@ const Home = () => {
                         </div>
 
                         <div className="h4">
-                            28
+                            {userData?.tickets?.find(
+                                (ticket) => ticket.status === 'todo'
+                            )?.count || 0}
                         </div>
 
                         <div className="home-stat-description">

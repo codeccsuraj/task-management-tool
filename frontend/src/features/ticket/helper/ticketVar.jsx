@@ -6,7 +6,10 @@ import {
     ArrowDownOutlined,
     MinusOutlined,
     ArrowUpOutlined,
-    AlertOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    EyeOutlined,
+    PlayCircleOutlined,
 } from '@ant-design/icons';
 
 export const ticketTypeOptions = [
@@ -29,6 +32,28 @@ export const ticketTypeOptions = [
         label: 'Story',
         value: 'story',
         icon: <BookOutlined />,
+    },
+];
+export const ticketStatusOptions = [
+    {
+        label: 'To Do',
+        value: 'todo',
+        icon: <ClockCircleOutlined />,
+    },
+    {
+        label: 'In Progress',
+        value: 'inProgress',
+        icon: <PlayCircleOutlined />,
+    },
+    {
+        label: 'In Review',
+        value: 'inReview',
+        icon: <EyeOutlined />,
+    },
+    {
+        label: 'Done',
+        value: 'done',
+        icon: <CheckCircleOutlined />,
     },
 ];
 

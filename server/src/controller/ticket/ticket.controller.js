@@ -1,4 +1,5 @@
 import { ticketService } from "../../service/ticket/ticket.service.js";
+import { tixketHistoryService } from "../../service/ticket/ticketHistory.service.js";
 import { decodeToken } from "../../utils/jwt.js";
 
 export const createProject = async (req, res) => {
@@ -137,8 +138,41 @@ export const getTicketByProjectId = async (req, res) => {
 
 export const getTicketById = async (req, res) => {
     try {
-        const {ticketId} = req.params;
+        const { ticketId } = req.params;
         const result = await ticketService.getTicketById(ticketId);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Create Sprint Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating sprint",
+        })
+    }
+}
+
+export const getHistoryByTicketId = async (req, res) => {
+    try {
+        const { ticketId } = req.params;
+        const result = await tixketHistoryService.getHistoryByTicketId(ticketId);
+
+        return res.status(result.status).json(result)
+    } catch (error) {
+        console.error("Create Sprint Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating sprint",
+        })
+    }
+}
+
+export const updateTicketFields = async (req, res) => {
+    try {
+        const { ticketId, event } = req.query;
+        const data = req.body;
+        const token = req.cookies.accessToken;
+        const user = decodeToken(token);
+        const result = await ticketService.updateTicketFields(ticketId, data, event, user?.id);
 
         return res.status(result.status).json(result)
     } catch (error) {

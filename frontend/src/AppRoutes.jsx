@@ -14,6 +14,8 @@ const Board = lazy(() => import("./pages/ticket-management/sprint/Board"));
 const Sprint = lazy(() => import("./pages/ticket-management/sprint/Sprint"));
 const TicketDetail = lazy(() => import("./pages/ticket-management/TicketDetail"));
 
+const PageNotFound = lazy(() => import("./components/error/PageNotFound"));
+
 const PageLoader = () => (
     <div className="page-loader">
         <p>Loading...</p>
@@ -62,6 +64,10 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register />,
+    },
+    {
+        path: "*",
+        element: <PageNotFound />,
     },
 ]);
 

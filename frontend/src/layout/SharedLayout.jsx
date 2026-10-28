@@ -12,7 +12,7 @@ const SharedLayout = () => {
       {/* Scrollable Content */}
       <main className="app-content min-vh-100" style={{background : '#F2F1EC'}}>
         <Header />
-        <div className="p-3">
+        <div className="p-2">
           <Outlet />
         </div>
       </main>

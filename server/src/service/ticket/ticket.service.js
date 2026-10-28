@@ -4,7 +4,7 @@ import ProjectMemberModal from "../../model/ticket/ProjectMember.js";
 import SprintModal from "../../model/ticket/Sprint.js";
 import TicketModel from "../../model/ticket/Ticket.js";
 import TicketHistoryModal from "../../model/ticket/TicketHistory.js";
-import { populate } from "dotenv";
+import { normalizeValue } from "../../hooks/validators.js";
 
 class TicketServices {
     async generateProjectKey(name) {
@@ -411,20 +411,24 @@ class TicketServices {
             }).populate({
                 path: 'user',
                 select: 'email',
+                populate: {
+                    path: "user",
+                    select: "full_name phone profile_picture",
+                },
             }).populate({
                 path: 'invitedBy',
                 select: 'email',
+                populate: {
+                    path: "user",
+                    select: "full_name phone profile_picture",
+                },
             }).sort({ createdAt: -1 }).lean();
 
             return {
                 status: 200,
                 success: true,
                 message: 'Project team fetched successfully',
-                data: {
-                    project,
-                    members,
-                    total: members.length,
-                },
+                data: members,
             };
         } catch (error) {
             console.error('Get Team Error:', error);
@@ -436,7 +440,6 @@ class TicketServices {
             };
         }
     }
-
 
     async createTicket(data, authUser) {
         try {
@@ -769,6 +772,282 @@ class TicketServices {
                 status: 500,
                 success: false,
                 message: 'Something went wrong while fetching project tickets',
+            };
+        }
+    }
+
+    async getTicketStatusCountsByAuthId(authId) {
+        try {
+
+            console.log("this is auth", authId)
+            if (!authId || !mongoose.isValidObjectId(authId)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Provide a valid auth ID",
+                };
+            }
+
+            // Get active projects owned by the authenticated user
+            const ownedProjectIds = await ProjectModal.distinct("_id", {
+                owner: authId,
+                isArchived: false,
+            });
+
+            // Get projects where the user is an active team member
+            const memberProjectIds = await ProjectMemberModal.distinct(
+                "project",
+                {
+                    user: authId,
+                }
+            );
+
+            const projectIds = [
+                ...new Set(
+                    [...ownedProjectIds, ...memberProjectIds].map(
+                        (projectId) => projectId.toString()
+                    )
+                ),
+            ].map(
+                (projectId) => new mongoose.Types.ObjectId(projectId)
+            );
+
+            if (!projectIds.length) {
+                return {
+                    status: 200,
+                    success: true,
+                    message: "Ticket status counts fetched successfully",
+                    ownedProjectIds,
+                    memberProjectIds,
+                    data: [],
+                };
+            }
+
+            const ticketsByStatus = await TicketModel.aggregate([
+                {
+                    $match: {
+                        project: { $in: projectIds },
+                        isDeleted: false,
+                    },
+                },
+
+                {
+                    $group: {
+                        _id: {
+                            $toLower: {
+                                $ifNull: ["$status", "unassigned"],
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        status: "$_id",
+                        count: 1,
+                    },
+                },
+
+                {
+                    $sort: { status: 1 },
+                },
+            ]);
+
+            return {
+                status: 200,
+                success: true,
+                message: "Ticket status counts fetched successfully",
+                data: ticketsByStatus,
+            };
+        } catch (error) {
+            console.error("Error fetching ticket status counts by auth ID:", error);
+            return {
+                status: 500,
+                success: false,
+                message: error.message,
+            };
+        }
+    }
+
+    async updateTicketFields(id, data, event, authUser) {
+        try {
+            // 1. Validate ticket ID
+            if (!mongoose.isValidObjectId(id)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Invalid ticket ID",
+                };
+            }
+
+            // 2. Validate request data
+            if (
+                !data ||
+                typeof data !== "object" ||
+                Array.isArray(data) ||
+                Object.keys(data).length === 0
+            ) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Please provide fields to update",
+                };
+            }
+
+            if (!event || typeof event !== "string" || !event.trim()) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Event type is required",
+                };
+            }
+
+            if (!mongoose.isValidObjectId(authUser)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Invalid authenticated user ID",
+                };
+            }
+
+            const allowedFields = [
+                "title",
+                "description",
+                "status",
+                "priority",
+                "type",
+                "assigned",
+                "reporter",
+                "sprint",
+                "storyPoints",
+                "startDate",
+                "dueDate",
+            ];
+
+            const invalidFields = Object.keys(data).filter(
+                (field) => !allowedFields.includes(field)
+            );
+
+            if (invalidFields.length > 0) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: `Fields cannot be updated: ${invalidFields.join(", ")}`,
+                };
+            }
+
+            // 4. Fetch existing ticket
+            const existingTicket = await TicketModel.findOne({
+                _id: id,
+                isDeleted: { $ne: true },
+            }).lean();
+
+            if (!existingTicket) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "Ticket not found",
+                };
+            }
+            const changes = {};
+
+            for (const [field, newValue] of Object.entries(data)) {
+                const oldValue = existingTicket[field];
+
+                if (
+                    normalizeValue(oldValue) !== normalizeValue(newValue)
+                ) {
+                    changes[field] = {
+                        oldValue: oldValue ?? null,
+                        newValue: newValue ?? null,
+                    };
+                }
+            }
+
+            if (Object.keys(changes).length === 0) {
+                return {
+                    status: 200,
+                    success: true,
+                    message: "No changes detected",
+                    data: {
+                        ticket: existingTicket,
+                        history: [],
+                    },
+                };
+            }
+
+            // 6. Update the ticket dynamically
+            const updatedTicket = await TicketModel.findByIdAndUpdate(
+                id,
+                {
+                    $set: Object.fromEntries(
+                        Object.entries(changes).map(([field, change]) => [
+                            field,
+                            change.newValue,
+                        ])
+                    ),
+                },
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            );
+
+            if (!updatedTicket) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "Ticket not found",
+                };
+            }
+
+            // 7. Create one history record per changed field
+            const historyRecords = Object.entries(changes).map(
+                ([field, change]) => ({
+                    ticket: updatedTicket._id,
+                    project: updatedTicket.project,
+                    actor: new mongoose.Types.ObjectId(authUser),
+                    eventType: event,
+                    field,
+                    oldValue: change.oldValue,
+                    newValue: change.newValue,
+                    message: `Updated ${field} of ticket ${updatedTicket.ticketId}`,
+                    metadata: {
+                        ticketId: updatedTicket.ticketId,
+                        source: "ticket_update",
+                    },
+                })
+            );
+
+            const history = await TicketHistoryModal.insertMany(historyRecords);
+
+            // 8. Return the result
+            return {
+                status: 200,
+                success: true,
+                message: "Ticket updated successfully",
+                data: {
+                    ticket: updatedTicket,
+                    history,
+                },
+            };
+        } catch (error) {
+            console.error("Update Ticket Error:", error);
+
+            // Handle Mongoose validation errors
+            if (error.name === "ValidationError" || error.name === "CastError") {
+                return {
+                    status: 400,
+                    success: false,
+                    message: error.message,
+                };
+            }
+
+            return {
+                status: 500,
+                success: false,
+                message: "Failed to update ticket",
             };
         }
     }
