@@ -32,6 +32,13 @@ class TicketHistoryServices {
             const history = await TicketHistoryModal.find({
                 ticket: ticketId,
             })
+                .populate({
+                    path: "actor",
+                    populate: {
+                        path: "user",
+                        select: "full_name phone profile_picture",
+                    },
+                })
                 .sort({ createdAt: -1 })
                 .lean();
 

@@ -9,6 +9,7 @@ import SelectInput from "../../../components/form/SelectInput";
 import { useUpsertByAuthIdMutation } from "../api/userApi";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 const UpdateUser = ({
     onClose,
@@ -107,6 +108,7 @@ const UpdateUser = ({
                                             onChange={(value) => formik.setFieldValue("date_of_birth", value)}
                                             onBlur={() => formik.setFieldTouched("date_of_birth", true)}
                                             placeholder="Select date of birth"
+                                            disabledDate={(current) => current && current.isAfter(dayjs(), "day")}
                                         />
                                     </FieldWrapper>
 

@@ -7,6 +7,7 @@ import Heading from "../../components/custom/Heading";
 import ButtonInput from "../../components/form/ButtonInput";
 import { getDayGreetings } from "../../hook/generator";
 import AddProject from "../../features/ticket/create/AddProject";
+import GreetingBanner from "./GreetingBanner ";
 
 const Home = () => {
     const authUser = useSelector((state) => state?.auth?.user);
@@ -23,38 +24,11 @@ const Home = () => {
     const userData = userRes?.data;
     const fullName = userData?.full_name || "User";
 
-    const greeting = getDayGreetings();
-
     return (
         <div className="home-page">
-
-            {/* Header */}
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-
-                <div>
-                    <Heading
-                        title={`${greeting}, ${fullName} 👋`}
-                        subtitle="Here's what's moving across Mobile today."
-                    />
-                </div>
-
-                {isAdmin && <ButtonInput
-                    type="button"
-                    className="btn-submit px-4"
-                    onClick={() => setShowAddForm(true)}
-                    label={
-                        <span className="d-flex align-items-center gap-2">
-                            Create New Project
-                            <ArrowRightOutlined />
-                        </span>
-                    }
-                />}
-
-            </div>
-
+            <GreetingBanner fullName={fullName} getDayGreetings={getDayGreetings} />
             {/* Dashboard content */}
-            <div className="row g-3">
-
+            <div className="row g-3 mt-2">
                 {/* Total Projects */}
                 <div className="col-12 col-md-6 col-xl-3">
                     <div className="p-4 bg-white">

@@ -2,12 +2,14 @@
 import React from 'react';
 import { Link } from "react-router-dom"
 import { Avatar, Tag, Tooltip, Typography } from 'antd';
-
+import { EditOutlined, EyeOutlined } from '@ant-design/icons';
 import {
     ticketPriorityOptions,
     ticketStatusOptions,
     ticketTypeOptions,
 } from '../../../features/ticket/helper/ticketVar';
+import ButtonInput from '../../../components/form/ButtonInput';
+import { formatDate } from '../../../hook/formatter';
 
 const { Text } = Typography;
 
@@ -164,5 +166,76 @@ export const getTicketListColumns = () => [
                 </span>
             );
         },
+    },
+];
+
+export const getProjectListColumns = (onView) => [
+
+    {
+        title: 'Project ID',
+        dataIndex: 'key',
+        key: 'key',
+        width: 120,
+        render: (val) =>
+            val ? (
+                <Link to={`/ticket/${val}`} className="link fw-semibold text-nowrap">
+                    {val}
+                </Link>
+            ) : (
+                <Empty />
+            ),
+    },
+    {
+        title: 'Title',
+        dataIndex: 'name',
+        key: 'name',
+        width: 320,
+        ellipsis: { showTitle: false },
+        render: (val, record) =>
+            val ? (
+                <Tooltip placement="topLeft" title={val}>
+                    <Link to={`/ticket/${record?.key}`} className="link">
+                        {val}
+                    </Link>
+                </Tooltip>
+            ) : (
+                <Empty />
+            ),
+    },
+    {
+        title: 'Created on',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: 120,
+        ellipsis: { showTitle: false },
+        render: (val) => formatDate(val) || "",
+    },
+    {
+        title: 'Actions',
+        key: 'actions',
+        width: 100,
+        align: 'center',
+        fixed: 'right', // stays visible when the table scrolls horizontally
+        render: (_, record) => (
+            <div className="d-inline-flex align-items-center gap-1">
+                <Tooltip title="View details">
+                    <ButtonInput
+                        variant="text"
+                        size="small"
+                        icon={<EyeOutlined />}
+                        aria-label={`View ${record?.name ?? 'project'}`}
+                    />
+                </Tooltip>
+
+                <Tooltip title="Edit project">
+                    <ButtonInput
+                        variant="text"
+                        size="small"
+                        icon={<EditOutlined />}
+                        aria-label={`Edit ${record?.name ?? 'project'}`}
+                    />
+                </Tooltip>
+            </div>
+        ),
     },
 ];

@@ -89,20 +89,19 @@ const Sidebar = () => {
                     ],
         },
 
-        {
-            key: "/backlog",
-            icon: <UnorderedListOutlined />,
-            label: "Backlog",
-        },
-
-        {
-            key: "/sprints",
-            icon: <AppstoreOutlined />,
-            label: "Sprints",
-        },
 
         ...(userGroup === "ADMIN"
             ? [
+                {
+                    key: "/backlog",
+                    icon: <UnorderedListOutlined />,
+                    label: "Backlog",
+                },
+                {
+                    key: "/sprints",
+                    icon: <AppstoreOutlined />,
+                    label: "Sprints",
+                },
                 {
                     key: "/team",
                     icon: <TeamOutlined />,

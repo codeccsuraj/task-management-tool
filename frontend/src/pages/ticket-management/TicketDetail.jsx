@@ -17,6 +17,7 @@ import TextEditor from '../../components/editor/TextEditor';
 import ButtonInput from '../../components/form/ButtonInput';
 import UploadedFilesPreview from './helper/UploadedFilesPreview';
 import TicketFooter from './TicketFooter';
+import dayjs from 'dayjs';
 
 /* ----------------------------- helpers ----------------------------- */
 
@@ -29,7 +30,7 @@ const EDITABLE_FIELDS = [
     'priority',
     'startDate',
     'dueDate',
-    'assignee',
+    'assigned',
 ];
 
 // Build the editable form object from the API ticket
@@ -41,7 +42,7 @@ const buildFormState = (ticket) => ({
     priority: ticket?.priority ?? undefined,
     startDate: ticket?.startDate ?? null,
     dueDate: ticket?.dueDate ?? null,
-    assignee: ticket?.assigned?._id ?? undefined,
+    assigned: ticket?.assigned?._id ?? undefined,
 });
 
 // Normalise values so "same" values always compare equal
@@ -143,7 +144,7 @@ const TicketDetail = () => {
     const setField = (field) => (eventOrValue) =>
         setForm((prev) => ({ ...prev, [field]: extractValue(eventOrValue) }));
 
-    // Team members -> assignee options
+    // Team members -> assigned options
     const assigneeOptions = useMemo(() => {
         const members = teamRes?.data || [];
         return members
@@ -189,9 +190,9 @@ const TicketDetail = () => {
             return acc;
         }, {});
 
-        // Payload shaped for the API (assignee -> assigned)
-        const payload = { ...form, assigned: form.assignee };
-        delete payload.assignee;
+        // Payload shaped for the API (assigned -> assigned)
+        const payload = { ...form, assigned: form.assigned };
+        delete payload.assigned;
 
         console.group(`Ticket ${ticketId} - save changes`);
         console.log('Changed fields:', changedFields);
@@ -221,43 +222,23 @@ const TicketDetail = () => {
         }
     };
 
-    const handleStatusUpdate = async (val) => {
+    const handleTicketFieldUpdate = async (field, val, event) => {
         try {
-            setField('status')(val);
-            const payload = {
-                status: val,
-            }
+            setField(field)(val);
 
             const result = await updateTicketFields({
                 ticketId: ticketData?._id,
-                data: payload,
-                event: "status_changed"
+                data: {
+                    [field === 'assigned' ? 'assigned' : field]: val,
+                },
+                event,
             }).unwrap();
 
-            console.log("Ticket status updated successfully", result)
+            console.log(`Ticket ${field} updated successfully`, result);
         } catch (error) {
-            console.error("Error occurred while updating status", error)
+            console.error(`Error occurred while updating ${field}`, error);
         }
-    }
-
-    const handlePriorityUpdate = async (val) => {
-        try {
-            setField('priority')(val);
-            const payload = {
-                priority: val,
-            }
-
-            const result = await updateTicketFields({
-                ticketId: ticketData?._id,
-                data: payload,
-                event: "priority_changed"
-            }).unwrap();
-
-            console.log("Ticket status updated successfully", result)
-        } catch (error) {
-            console.error("Error occurred while updating status", error)
-        }
-    }
+    };
 
     /* ----------------------------- render ----------------------------- */
 
@@ -282,25 +263,8 @@ const TicketDetail = () => {
     return (
         <div className="container-fluid">
             {/* Heading row with the Save button pinned to the right */}
-            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                 <Heading title="Ticket details" />
-
-                {isDirty && (
-                    <div className="d-flex align-items-center gap-2">
-                        <span className="small text-muted d-none d-md-inline">
-                            {changedFields.length} unsaved {changedFields.length === 1 ? 'change' : 'changes'}
-                        </span>
-                        <Button icon={<UndoOutlined />} onClick={handleReset} disabled={isSaving}>
-                            Discard
-                        </Button>
-                        <ButtonInput
-                            type="button"
-                            className="btn-submit"
-                            label="Save changes"
-                            onClick={handleSave}
-                        />
-                    </div>
-                )}
             </div>
 
             <div className="row g-4">
@@ -315,6 +279,15 @@ const TicketDetail = () => {
                                 value={form.title}
                                 placeholder="Short summary of the ticket"
                                 onChange={setField('title')}
+                                onBlur={() => {
+                                    if (form.title?.trim() !== ticketData?.title?.trim()) {
+                                        handleTicketFieldUpdate(
+                                            'title',
+                                            form.title,
+                                            'title_changed'
+                                        );
+                                    }
+                                }}
                             />
                         </Field>
 
@@ -349,7 +322,7 @@ const TicketDetail = () => {
                                 value={form.status}
                                 placeholder="Select status"
                                 options={statusOptions}
-                                onChange={handleStatusUpdate}
+                                onChange={(val) => handleTicketFieldUpdate("status", val, "status_changed")}
                             />
                         </Field>
 
@@ -360,7 +333,7 @@ const TicketDetail = () => {
                                 value={form.type}
                                 placeholder="Select ticket type"
                                 options={typeOptions}
-                                onChange={setField('type')}
+                                onChange={(val) => handleTicketFieldUpdate("type", val, "type_changed")}
                             />
                         </Field>
 
@@ -371,18 +344,18 @@ const TicketDetail = () => {
                                 value={form.priority}
                                 placeholder="Select ticket priority"
                                 options={priorityOptions}
-                                onChange={handlePriorityUpdate}
+                                onChange={(val) => handleTicketFieldUpdate("priority", val, "priority_changed")}
                             />
                         </Field>
 
-                        <Field id="assignee" label="Assignee" changed={isChanged('assignee')}>
+                        <Field id="assigned" label="Assignee" changed={isChanged('assigned')}>
                             <SelectInput
-                                name="assignee"
-                                id="assignee"
-                                value={form.assignee}
-                                placeholder="Select assignee"
+                                name="assigned"
+                                id="assigned"
+                                value={form.assigned}
+                                placeholder="Select assigned"
                                 options={assigneeOptions}
-                                onChange={setField('assignee')}
+                                onChange={(val) => handleTicketFieldUpdate("assigned", val, "assignee_changed")}
                             />
                         </Field>
 
@@ -394,7 +367,8 @@ const TicketDetail = () => {
                                         id="startDate"
                                         value={form.startDate}
                                         placeholder="Start date"
-                                        onChange={setField('startDate')}
+                                        onChange={(val) => handleTicketFieldUpdate("startDate", val, "start_date_changed")}
+                                        disabledDate={(current) => current && current.isBefore(dayjs(), "day")}
                                     />
                                 </Field>
                             </div>
@@ -405,7 +379,8 @@ const TicketDetail = () => {
                                         id="dueDate"
                                         value={form.dueDate}
                                         placeholder="Due date"
-                                        onChange={setField('dueDate')}
+                                        onChange={(val) => handleTicketFieldUpdate("dueDate", val, "due_date_changed")}
+                                        disabledDate={(current) => current && current.isBefore(dayjs(), "day")}
                                     />
                                 </Field>
                             </div>

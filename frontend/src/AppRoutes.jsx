@@ -13,6 +13,7 @@ const UserList = lazy(() => import("./pages/user/UserList"));
 const Board = lazy(() => import("./pages/ticket-management/sprint/Board"));
 const Sprint = lazy(() => import("./pages/ticket-management/sprint/Sprint"));
 const TicketDetail = lazy(() => import("./pages/ticket-management/TicketDetail"));
+const ProjectList = lazy(() => import("./pages/ticket-management/backlog/ProjectList"));
 
 const PageNotFound = lazy(() => import("./components/error/PageNotFound"));
 
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
             {
                 path: '/ticket/:ticketId',
                 element: <TicketDetail />,
+            },
+            {
+                path: '/backlog',
+                element: <ProjectList />,
             },
         ],
     },

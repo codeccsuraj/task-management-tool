@@ -295,7 +295,7 @@ const TicketHistory = ({ ticketId }) => {
                                                 </span>
                                                 <Text type="secondary">
                                                     {typeof item.actor === 'object'
-                                                        ? item.actor.full_name ||
+                                                        ? item?.actor?.user?.full_name ||
                                                           item.actor.email ||
                                                           'Team member'
                                                         : 'Team member'}
