@@ -124,7 +124,7 @@ const Login = () => {
                                 type="submit"
                                 label={isLoading ? 'Logging in...' : 'Log in'}
                                 loading={isLoading || formik.isSubmitting}
-                                className="btn-submit w-100"
+                                variant='success'
                             />
                         </form>
 

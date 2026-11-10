@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Avatar, Button, Empty, Spin } from 'antd';
-import { SaveOutlined, UndoOutlined } from '@ant-design/icons';
+import { Avatar, Empty, Spin } from 'antd';
 
 import { useGetProjectTeamQuery, useGetTicketByIdQuery, useUpdateTicketFieldsMutation } from '../../features/ticket/api/ticketApi';
 import {
@@ -121,6 +120,7 @@ const TicketDetail = () => {
     const [initialForm, setInitialForm] = useState(null);
     const [form, setForm] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const [showDescriptionAction, setShowDescriptionAction] = useState(false)
 
     // Load / reload the form whenever the ticket arrives or changes
     useEffect(() => {
@@ -179,49 +179,6 @@ const TicketDetail = () => {
     const typeOptions = useMemo(() => withIcons(ticketTypeOptions), []);
     const priorityOptions = useMemo(() => withIcons(ticketPriorityOptions), []);
 
-    const handleReset = () => setForm(initialForm);
-
-    const handleSave = async () => {
-        if (!isDirty) return;
-
-        // Only the fields the user actually changed
-        const changes = changedFields.reduce((acc, field) => {
-            acc[field] = form[field];
-            return acc;
-        }, {});
-
-        // Payload shaped for the API (assigned -> assigned)
-        const payload = { ...form, assigned: form.assigned };
-        delete payload.assigned;
-
-        console.group(`Ticket ${ticketId} - save changes`);
-        console.log('Changed fields:', changedFields);
-        console.log('Changes (new values):', changes);
-        console.log(
-            'Before -> after:',
-            changedFields.reduce((acc, field) => {
-                acc[field] = { from: initialForm[field], to: form[field] };
-                return acc;
-            }, {})
-        );
-        console.log('Full form values:', form);
-        console.log('Payload for API:', payload);
-        console.groupEnd();
-
-        setIsSaving(true);
-        try {
-            // TODO: call your update mutation here, e.g.
-            // await updateTicket({ id: ticketId, ...changes }).unwrap();
-
-            // Treat the current values as the new saved state
-            setInitialForm(form);
-        } catch (error) {
-            console.error('Failed to save ticket:', error);
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
     const handleTicketFieldUpdate = async (field, val, event) => {
         try {
             setField(field)(val);
@@ -237,6 +194,48 @@ const TicketDetail = () => {
             console.log(`Ticket ${field} updated successfully`, result);
         } catch (error) {
             console.error(`Error occurred while updating ${field}`, error);
+        }
+    };
+
+    const handleDescriptionUpdate = async (val) => {
+        try {
+            setIsSaving(true);
+
+            const result = await updateTicketFields({
+                ticketId: ticketData?._id,
+                data: {
+                    description: val,
+                },
+                attachments: pendingImages,
+                event: "description_changed",
+            }).unwrap();
+
+            // Update saved description
+            setInitialForm((prev) => ({
+                ...prev,
+                description: result.data.description,
+            }));
+
+            setForm((prev) => ({
+                ...prev,
+                description: result.data.description,
+            }));
+
+            // Release temporary blob URLs
+            pendingImages.forEach((item) => {
+                if (item.previewUrl) {
+                    URL.revokeObjectURL(item.previewUrl);
+                }
+            });
+
+            setPendingImages([]);
+
+            console.log("Description updated successfully", result);
+
+        } catch (error) {
+            console.error("Error updating description:", error);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -303,7 +302,20 @@ const TicketDetail = () => {
                                         ...newImages,
                                     ]);
                                 }}
+                                onFocus={() => setShowDescriptionAction(true)}
+                                onBlur={() => setShowDescriptionAction(false)}
                             />
+                            {(form.description && form.description?.trim() !== "" && showDescriptionAction) && <div>
+                                <div className='mt-2'>
+                                    <ButtonInput
+                                        type='button'
+                                        variant='success'
+                                        label='Save'
+                                        size='small'
+                                        onClick={() => handleDescriptionUpdate(form.description)}
+                                    />
+                                </div>
+                            </div>}
                         </Field>
                         <div>
                             <UploadedFilesPreview files={pendingImages} />

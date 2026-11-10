@@ -4,8 +4,11 @@ const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     credentials: 'include',
 
-    prepareHeaders: (headers) => {
-        headers.set("Content-Type", "application/json");
+    prepareHeaders: (headers, { getState, arg }) => {
+        if (!(arg?.body instanceof FormData)) {
+            headers.set("Content-Type", "application/json");
+        }
+
         return headers;
     }
 });

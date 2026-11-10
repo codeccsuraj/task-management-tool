@@ -5,6 +5,7 @@ import cors from 'cors'
 import { corsConfig } from './config/cors.config.js';
 import userRoutes from './routes/user/user.routes.js';
 import ticketRoutes from './routes/ticket/ticket.routes.js';
+import path from 'path'
 
 const app = express();
 
@@ -16,7 +17,11 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/user", userRoutes)
-app.use("/api/v1/ticket", ticketRoutes)
+app.use("/api/v1/ticket", ticketRoutes);
+app.use(
+    "/uploads",
+    express.static(path.join(process.cwd(), "uploads"))
+);
 
 // Health check
 app.get("/", (req, res) => {

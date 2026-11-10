@@ -5,6 +5,7 @@ import SprintModal from "../../model/ticket/Sprint.js";
 import TicketModel from "../../model/ticket/Ticket.js";
 import TicketHistoryModal from "../../model/ticket/TicketHistory.js";
 import { normalizeValue } from "../../hooks/validators.js";
+import { populate } from "dotenv";
 
 class TicketServices {
     async generateProjectKey(name) {
@@ -142,6 +143,94 @@ class TicketServices {
         }
     }
 
+    async updateMemberProject(projectId, authId, data) {
+        try {
+            // Validate project ID
+            if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Invalid project ID.",
+                };
+            }
+
+            // Validate authenticated user ID
+            if (!authId || !mongoose.Types.ObjectId.isValid(authId)) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Invalid auth ID.",
+                };
+            }
+
+            // Validate member IDs
+            if (!Array.isArray(data) || data.length === 0) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "Please select at least one member.",
+                };
+            }
+
+            // Validate and remove duplicate IDs
+            const memberIds = [...new Set(data)];
+
+            const invalidIds = memberIds.filter(
+                id => !mongoose.Types.ObjectId.isValid(id)
+            );
+
+            if (invalidIds.length > 0) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: "One or more member IDs are invalid.",
+                };
+            }
+
+            // Prepare bulk operations
+            const operations = memberIds.map(userId => ({
+                updateOne: {
+                    filter: {
+                        project: projectId,
+                        user: userId,
+                    },
+                    update: {
+                        $setOnInsert: {
+                            project: projectId,
+                            user: userId,
+                            role: "member",
+                            status: "invited",
+                            invitedBy: authId,
+                        },
+                    },
+                    upsert: true,
+                },
+            }));
+
+            const result = await ProjectMemberModal.bulkWrite(operations);
+
+            return {
+                status: 200,
+                success: true,
+                message: "Project members added successfully.",
+                data: {
+                    addedCount: result.upsertedCount,
+                    existingCount: memberIds.length - result.upsertedCount,
+                },
+            };
+
+        } catch (error) {
+            console.error("updateMemberProject error:", error);
+
+            return {
+                status: 500,
+                success: false,
+                message: "Failed to add project members.",
+                error: error.message,
+            };
+        }
+    }
+
     async getMyProjects(authId, { page = 1, limit = 10 }) {
         try {
             if (!authId || !mongoose.Types.ObjectId.isValid(authId)) {
@@ -167,10 +256,22 @@ class TicketServices {
                         path: "owner",
                         select: "email",
                     })
+                    .populate({
+                        path: "members",
+                        match: { role: "member" },
+                        populate: {
+                            path: "user",
+                            select: "email",
+                            populate: {
+                                path: "user",
+                                select: "full_name"
+                            }
+                        },
+                    })
                     .sort({ createdAt: -1 })
                     .skip(skip)
                     .limit(limit)
-                    .lean(),
+                    .lean({ virtuals: true }),
 
                 ProjectModal.countDocuments(filter),
             ]);
@@ -778,8 +879,6 @@ class TicketServices {
 
     async getTicketStatusCountsByAuthId(authId) {
         try {
-
-            console.log("this is auth", authId)
             if (!authId || !mongoose.isValidObjectId(authId)) {
                 return {
                     status: 400,

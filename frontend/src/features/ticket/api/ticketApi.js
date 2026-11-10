@@ -56,13 +56,30 @@ const ticketApi = baseApi.injectEndpoints({
             invalidatesTags: ["Tickets"]
         }),
         updateTicketFields: builder.mutation({
-            query: ({ ticketId, event, data }) => ({
-                url: `/ticket/update-ticket`,
-                method: "PATCH",
-                params: { ticketId, event },
-                body: data,
-            }),
-            invalidatesTags: ["Tickets"]
+            query: ({ ticketId, event, data, attachments = [] }) => {
+                const formData = new FormData();
+
+                Object.entries(data).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null) {
+                        formData.append(key, value);
+                    }
+                });
+
+                attachments.forEach((item) => {
+                    if (item.file instanceof File) {
+                        formData.append("attachments", item.file);
+                        formData.append("attachmentIds", item.id);
+                    }
+                });
+
+                return {
+                    url: `/ticket/update-ticket`,
+                    method: "PATCH",
+                    params: { ticketId, event },
+                    body: formData,
+                };
+            },
+            invalidatesTags: ["Tickets", "TicketHistory"]
         }),
         getTicketByProjectId: builder.query({
             query: (data) => ({
@@ -93,6 +110,14 @@ const ticketApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Tickets", "TicketHistory"]
         }),
+        updateMemberProject: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `/ticket/add-member/${id}`,
+                method: "PATCH",
+                body: data
+            }),
+            invalidatesTags: ["Tickets", "TicketHistory"]
+        }),
     })
 });
 
@@ -108,5 +133,6 @@ export const {
     useGetTicketByProjectIdQuery,
     useGetHistoryByTicketIdQuery,
     useGetTicketByIdQuery,
-    useUpdateTicketMutation
+    useUpdateTicketMutation,
+    useUpdateMemberProjectMutation
 } = ticketApi;

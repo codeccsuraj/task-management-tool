@@ -25,6 +25,9 @@ const TextEditor = ({
     onChange,
     onPendingImagesChange,
 
+    onFocus,
+    onBlur,
+
     placeholder = 'Start writing...',
     toolbar = defaultToolbar,
 
@@ -36,7 +39,7 @@ const TextEditor = ({
     extensions: extensionOptions = {},
     className = '',
 }) => {
-    // Create temporary image previews and return their files to the parent.
+
     const handleImagePaste = (editor, files) => {
         if (!editable) return;
 
@@ -52,7 +55,6 @@ const TextEditor = ({
             previewUrl: URL.createObjectURL(file),
         }));
 
-        // Parent component keeps the actual files in React state.
         onPendingImagesChange?.(pendingImages);
 
         const imageContent = pendingImages.map((image) => ({
@@ -67,7 +69,6 @@ const TextEditor = ({
         editor.chain().focus().insertContent(imageContent).run();
     };
 
-    // Handle images dropped into the editor.
     const handleImageDrop = (editor, files, position) => {
         if (!editable) return;
 
@@ -101,7 +102,6 @@ const TextEditor = ({
         () =>
             createTextExtension({
                 ...extensionOptions,
-
                 onImagePaste: handleImagePaste,
                 onImageDrop: handleImageDrop,
             }),
@@ -122,10 +122,21 @@ const TextEditor = ({
                 class: 'rich-text-content',
                 'data-placeholder': placeholder,
             },
+
+            handleDOMEvents: {
+                focus: (view, event) => {
+                    onFocus?.(event);
+                    return false;
+                },
+
+                blur: (view, event) => {
+                    onBlur?.(event);
+                    return false;
+                },
+            },
         },
     });
 
-    // Update editor when content changes externally.
     useEffect(() => {
         if (!editor) return;
 
@@ -139,7 +150,6 @@ const TextEditor = ({
         }
     }, [editor, value]);
 
-    // Handle read-only mode.
     useEffect(() => {
         editor?.setEditable(editable);
     }, [editor, editable]);
@@ -148,8 +158,9 @@ const TextEditor = ({
 
     return (
         <div
-            className={`rich-text-editor ${!editable ? 'rich-text-readonly' : ''
-                } ${className}`}
+            className={`rich-text-editor ${
+                !editable ? 'rich-text-readonly' : ''
+            } ${className}`}
             style={{
                 '--editor-min-height': `${minHeight}px`,
                 '--editor-max-height': `${maxHeight}px`,

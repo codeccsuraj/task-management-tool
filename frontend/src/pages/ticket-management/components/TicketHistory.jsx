@@ -45,6 +45,11 @@ const EVENT_CONFIG = {
         color: 'purple',
         icon: <CheckCircleOutlined />,
     },
+    description_changed: {
+        label: 'Description updated',
+        color: 'cyan',
+        icon: <EditOutlined />,
+    },
     default: {
         label: 'Ticket updated',
         color: 'default',
@@ -92,10 +97,20 @@ const getEventConfig = (eventType) => {
     return EVENT_CONFIG[eventType] || EVENT_CONFIG.default;
 };
 
+const getActorName = (actor) => {
+    if (!actor || typeof actor !== 'object') {
+        return 'Team member';
+    }
+
+    return (
+        actor.user?.full_name ||
+        actor.email ||
+        'Team member'
+    );
+};
+
 const getHistoryDescription = (item) => {
     if (item.eventType === 'ticket_created') {
-        const title = item.newValue?.title;
-
         return (
             <div>
                 Created ticket
@@ -104,23 +119,32 @@ const getHistoryDescription = (item) => {
                         {item.metadata.ticketId}
                     </Text>
                 )}
-                {title && (
+
+                {item.newValue?.title && (
                     <div className="mt-1 text-secondary">
-                        {title}
+                        {item.newValue.title}
                     </div>
                 )}
             </div>
         );
     }
 
-    if (item.field && item.oldValue !== undefined && item.newValue !== undefined) {
+    if (item.eventType === 'description_changed') {
         return (
-            <div className="d-flex flex-wrap align-items-center gap-2 mt-2">
-                <Text type="secondary">
-                    {formatLabel(item.field)}
-                </Text>
+            <Text type="secondary">
+                {item.message || 'Updated ticket description'}
+            </Text>
+        );
+    }
 
-                <Tag className="m-0">
+    if (
+        item.field &&
+        item.oldValue !== undefined &&
+        item.newValue !== undefined
+    ) {
+        return (
+            <div className="d-flex flex-wrap align-items-center gap-2">
+                <Tag className="history-value">
                     {formatValue(item.oldValue)}
                 </Tag>
 
@@ -140,7 +164,7 @@ const getHistoryDescription = (item) => {
     );
 };
 
-const TicketHistory = ({ ticketId }) => {
+const TicketHistory = ({ ticketId, maxHeight = 480 }) => {
     const {
         data: response,
         isLoading,
@@ -151,15 +175,12 @@ const TicketHistory = ({ ticketId }) => {
         skip: !ticketId,
     });
 
-    // Supports both { data: [...] } and a direct array response.
     const history = useMemo(() => {
         const records = Array.isArray(response)
             ? response
             : response?.data;
 
-        if (!Array.isArray(records)) {
-            return [];
-        }
+        if (!Array.isArray(records)) return [];
 
         return [...records].sort(
             (a, b) =>
@@ -174,7 +195,6 @@ const TicketHistory = ({ ticketId }) => {
                 type="warning"
                 showIcon
                 message="Ticket not selected"
-                description="Select a ticket to view its history."
             />
         );
     }
@@ -202,113 +222,129 @@ const TicketHistory = ({ ticketId }) => {
     }
 
     return (
-        <div className="ticket-history bg-light p-2">
-            {/* Header */}
-            <div className="d-flex align-items-center justify-content-between mb-4">
-                <div>
-                    <div className="d-flex align-items-center gap-2">
-                        <HistoryOutlined className="text-secondary fs-5" />
-                        <Text strong className="fs-6">
-                            Activity history
-                        </Text>
-                        <Tag className="rounded-pill">
-                            {history.length}
-                        </Tag>
+        <div className="ticket-history-container">
+
+            {/* Sticky header */}
+            <div className="ticket-history-header">
+                <div className="d-flex align-items-center gap-3">
+                    <div className="history-header-icon">
+                        <HistoryOutlined />
                     </div>
 
-                    <Text type="secondary" className="small">
-                        Track changes and activity on this ticket
-                    </Text>
+                    <div>
+                        <div className="d-flex align-items-center gap-2">
+                            <Text strong className="fs-6">
+                                Activity
+                            </Text>
+
+                            <Tag color="blue" className="rounded-pill m-0">
+                                {history.length}
+                            </Tag>
+                        </div>
+
+                        <Text type="secondary" className="small">
+                            Track all changes and updates
+                        </Text>
+                    </div>
                 </div>
 
                 {isFetching && (
-                    <Text type="secondary" className="small">
-                        Updating...
-                    </Text>
+                    <div className="history-fetching">
+                        <span className="history-pulse" />
+                        <Text type="secondary" className="small">
+                            Syncing
+                        </Text>
+                    </div>
                 )}
             </div>
 
-            {/* Timeline */}
-            {history.length === 0 ? (
-                <div className="py-5">
-                    <Empty
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description="No activity recorded yet"
-                    />
-                </div>
-            ) : (
-                <Timeline
-                    className="ticket-history-timeline"
-                    items={history.map((item) => {
-                        const config = getEventConfig(item.eventType);
+            {/* Scrollable content */}
+            <div
+                className="ticket-history-scroll"
+                style={{ maxHeight }}
+            >
+                {history.length === 0 ? (
+                    <div className="history-empty">
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={
+                                <Text type="secondary">
+                                    No activity recorded yet
+                                </Text>
+                            }
+                        />
+                    </div>
+                ) : (
+                    <Timeline
+                        className="ticket-history-timeline"
+                        items={history.map((item) => {
+                            const config = getEventConfig(item.eventType);
 
-                        return {
-                            key: item._id,
-                            color: config.color,
-                            dot: (
-                                <Avatar
-                                    size={30}
-                                    icon={config.icon}
-                                    className="ticket-history-icon"
-                                />
-                            ),
-                            children: (
-                                <div className="ticket-history-card">
-                                    <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                                        <div className="d-flex align-items-center flex-wrap gap-2">
-                                            <Text strong>
-                                                {config.label}
-                                            </Text>
+                            return {
+                                key: item._id,
+                                color: config.color,
+                                dot: (
+                                    <div className={`history-dot history-dot-${config.color}`}>
+                                        {config.icon}
+                                    </div>
+                                ),
+                                children: (
+                                    <div className="ticket-history-card">
 
-                                            {item.field && (
-                                                <Tag className="m-0">
-                                                    {formatLabel(item.field)}
-                                                </Tag>
-                                            )}
+                                        <div className="history-card-header">
+                                            <div className="d-flex flex-wrap align-items-center gap-2">
+                                                <Text strong>
+                                                    {config.label}
+                                                </Text>
+
+                                                {item.field && (
+                                                    <Tag className="m-0">
+                                                        {formatLabel(item.field)}
+                                                    </Tag>
+                                                )}
+                                            </div>
+
+                                            <Tooltip
+                                                title={formatDate(item.createdAt)}
+                                            >
+                                                <Text
+                                                    type="secondary"
+                                                    className="history-time"
+                                                >
+                                                    <ClockCircleOutlined />
+                                                    {formatDate(item.createdAt)}
+                                                </Text>
+                                            </Tooltip>
                                         </div>
 
-                                        <Tooltip
-                                            title={new Date(item.createdAt).toLocaleString()}
-                                        >
-                                            <Text
-                                                type="secondary"
-                                                className="small text-nowrap"
+                                        <div className="history-card-content">
+                                            {getHistoryDescription(item)}
+                                        </div>
+
+                                        <div className="history-card-footer">
+                                            <Avatar
+                                                size={23}
+                                                className="history-actor-avatar"
                                             >
-                                                <ClockCircleOutlined className="me-1" />
-                                                {formatDate(item.createdAt)}
-                                            </Text>
-                                        </Tooltip>
-                                    </div>
+                                                {getActorName(item.actor)
+                                                    .charAt(0)
+                                                    .toUpperCase()}
+                                            </Avatar>
 
-                                    <div className="mt-2">
-                                        {getHistoryDescription(item)}
-                                    </div>
-
-                                    {item.actor && (
-                                        <div className="mt-3">
                                             <Text
                                                 type="secondary"
                                                 className="small"
                                             >
-                                                <span className="me-1">
-                                                    By
-                                                </span>
-                                                <Text type="secondary">
-                                                    {typeof item.actor === 'object'
-                                                        ? item?.actor?.user?.full_name ||
-                                                          item.actor.email ||
-                                                          'Team member'
-                                                        : 'Team member'}
-                                                </Text>
+                                                {getActorName(item.actor)}
                                             </Text>
                                         </div>
-                                    )}
-                                </div>
-                            ),
-                        };
-                    })}
-                />
-            )}
+                                    </div>
+                                ),
+                            };
+                        })}
+                    />
+                )}
+            </div>
         </div>
     );
 };

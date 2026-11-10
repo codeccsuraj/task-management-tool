@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom"
 import { Avatar, Tag, Tooltip, Typography } from 'antd';
-import { EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined, EyeOutlined, UserAddOutlined } from '@ant-design/icons';
 import {
     ticketPriorityOptions,
     ticketStatusOptions,
@@ -169,8 +169,7 @@ export const getTicketListColumns = () => [
     },
 ];
 
-export const getProjectListColumns = (onView) => [
-
+export const getProjectListColumns = (onUpdate, addMember) => [
     {
         title: 'Project ID',
         dataIndex: 'key',
@@ -233,6 +232,17 @@ export const getProjectListColumns = (onView) => [
                         size="small"
                         icon={<EditOutlined />}
                         aria-label={`Edit ${record?.name ?? 'project'}`}
+                        onClick={() => onUpdate(record)}
+                    />
+                </Tooltip>
+
+                <Tooltip title="Add member">
+                    <ButtonInput
+                        variant="text"
+                        size="small"
+                        icon={<UserAddOutlined />}
+                        aria-label={`Edit ${record?.name ?? 'project'}`}
+                        onClick={() => addMember(record)}
                     />
                 </Tooltip>
             </div>

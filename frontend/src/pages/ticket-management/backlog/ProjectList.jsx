@@ -7,9 +7,16 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { useGetMyProjectsQuery } from '../../../features/ticket/api/ticketApi';
 import { Empty, Skeleton, Table } from 'antd';
 import { getProjectListColumns } from '../helper/ticketColumns';
+import UpdateProject from '../../../features/ticket/update/UpdateProject';
+import AddMenber from '../../../features/ticket/create/AddMenber';
 const ProjectList = () => {
     const authUser = useSelector((state) => state?.auth?.user);
     const [showAddForm, setShowAddForm] = useState(false);
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
+    const [showAddMember, setShowAddMember] = useState(false);
+    const [addedMember, setAddedMember] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
+
     const authId = authUser?.id;
     const isAdmin = authUser?.user_group === "ADMIN";
 
@@ -17,17 +24,22 @@ const ProjectList = () => {
     const [limit, setLimit] = useState(10)
 
     const { data: projectRes, isLoading: projectLoading, isFetching: projectFetching,
-    } = useGetMyProjectsQuery({
-        page,
-        limit,
-    });
+    } = useGetMyProjectsQuery({ page, limit, });
 
     const rowsData = projectRes?.data?.projects ?? [];
     const pagination = projectRes?.data?.pagination;
     const total = pagination?.total ?? rowsData.length;
+    const handleProjectUpdateForm = (val) => {
+        setSelectedProject(val);
+        setShowUpdateForm(true)
+    }
 
-    const tableColumns = getProjectListColumns()
-    console.log("projectRes", projectRes)
+    const handleAddMember = (val) => {
+        setAddedMember(val)
+        setShowAddMember(true)
+    }
+
+    const tableColumns = getProjectListColumns(handleProjectUpdateForm, handleAddMember)
 
     if (projectLoading) {
         return (
@@ -44,13 +56,15 @@ const ProjectList = () => {
                     subtitle="Manage your projects"
                 />
 
-                <ButtonInput
-                    type="button"
-                    variant='default'
-                    label="Add Project"
-                    icon={<PlusCircleOutlined />}
-                    onClick={() => setShowAddForm(true)}
-                />
+                <div className='d-flex align-items-center gap-2'>
+                    <ButtonInput
+                        type="button"
+                        variant='default'
+                        label="Add Project"
+                        icon={<PlusCircleOutlined />}
+                        onClick={() => setShowAddForm(true)}
+                    />
+                </div>
             </div>
 
             <div className='p-3 bg-white rounded-2'>
@@ -90,6 +104,8 @@ const ProjectList = () => {
             </div>
 
             <AddProject isOpen={showAddForm} onClose={() => setShowAddForm(false)} />
+            <UpdateProject isOpen={showUpdateForm} onClose={() => setShowUpdateForm(false)} prevData={selectedProject} />
+            <AddMenber isOpen={showAddMember} onClose={() => setShowAddMember(false)} prevData={addedMember} />
         </div>
     )
 }
