@@ -499,15 +499,26 @@ class TicketServices {
 
     async getProjectTeam(projectId) {
         try {
-            if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+            if (!projectId || projectId.trim() === "") {
                 return {
                     status: 400,
                     success: false,
                     message: 'Invalid project ID',
                 };
             }
+
+            const getProject = await ProjectModal.findOne({ key: projectId });
+
+            if (!getProject) {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'No project found',
+                };
+            }
+
             const members = await ProjectMemberModal.find({
-                project: projectId,
+                project: getProject._id,
                 status: { $in: ['active', 'invited'] },
             }).populate({
                 path: 'user',
@@ -848,6 +859,7 @@ class TicketServices {
                         select: "full_name phone profile_picture",
                     },
                 })
+                .populate("project")
                 .populate({
                     path: "reporter",
                     select: "email",

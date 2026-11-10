@@ -112,8 +112,8 @@ const TicketDetail = () => {
     const [updateTicketFields] = useUpdateTicketFieldsMutation()
     const ticketData = ticketRes?.data;
 
-    const { data: teamRes } = useGetProjectTeamQuery(ticketData?.project, {
-        skip: !ticketData?.project,
+    const { data: teamRes } = useGetProjectTeamQuery(ticketData?.project?.key, {
+        skip: !ticketData?.project?.key,
     });
 
     // Baseline (what is saved) and the working copy (what the user is editing)

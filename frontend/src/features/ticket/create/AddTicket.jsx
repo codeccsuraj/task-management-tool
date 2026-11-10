@@ -2,16 +2,15 @@ import React, { useMemo } from 'react';
 import { useFormik } from 'formik';
 import ReactQuill from 'react-quill-new';
 import { Upload, Button, message, Modal, Avatar } from 'antd';
-import { PaperClipOutlined, UserOutlined } from '@ant-design/icons';
+import { PaperClipOutlined } from '@ant-design/icons';
 
 import TextInput from '../../../components/form/TextInput';
 import FieldWrapper from '../../FieldWrapper';
 import SelectInput from '../../../components/form/SelectInput';
 import { ticketPriorityOptions, ticketTypeOptions } from '../helper/ticketVar';
 import DateInput from '../../../components/form/DateInput';
-import { useGetUsersQuery } from '../../user/api/userApi';
 import { useSelector } from 'react-redux';
-import { useCreateTicketMutation, useGetSprintByProjectIdQuery } from '../api/ticketApi';
+import { useCreateTicketMutation, useGetProjectTeamQuery, useGetSprintByProjectIdQuery } from '../api/ticketApi';
 import { useParams } from 'react-router-dom';
 import { ticketValidationSchema } from '../helper/validationSchema';
 
@@ -22,10 +21,13 @@ const AddTicket = ({
     const { project } = useParams();
     const currentUser = useSelector((state) => state.auth.user);
     const [createTicket] = useCreateTicketMutation()
-    const { data, isLoading: isUsersLoading, } = useGetUsersQuery({ page: 1, limit: 10, });
+    const { data: teamRes } = useGetProjectTeamQuery(project, {
+        skip: !open,
+    });
     const { data: sprintRes, } = useGetSprintByProjectIdQuery(project, {
         skip: !project
     });
+
 
     const formik = useFormik({
         initialValues: {
@@ -80,7 +82,7 @@ const AddTicket = ({
         },
     });
 
-    const userOptions = data?.data?.users || []
+    const userOptions = teamRes?.data || []
     const sprintOptions = sprintRes?.data || []
 
     return (
@@ -349,76 +351,51 @@ const AddTicket = ({
                                 }
                                 onBlur={() => formik.setFieldTouched('assignee', true)}
                                 placeholder="Select assigned to"
-                                options={[
-                                    {
-                                        value: currentUser.id,
+                                options={userOptions?.map((item) => {
+                                    const name = item?.user?.user?.full_name || 'Unknown User';
+                                    const email = item?.user?.email || '';
+
+                                    const initials = name
+                                        .split(' ')
+                                        .filter(Boolean)
+                                        .slice(0, 2)
+                                        .map((part) => part[0])
+                                        .join('')
+                                        .toUpperCase();
+
+                                    return {
+                                        value: item?.user?._id || "",
                                         label: (
-                                            <div className="d-flex align-items-center gap-2">
+                                            <div className="d-flex align-items-center gap-2 py-1">
                                                 <Avatar
                                                     size={25}
-                                                    icon={<UserOutlined />}
                                                     style={{
                                                         backgroundColor: '#e6f4ff',
                                                         color: '#1677ff',
+                                                        fontSize: 12,
+                                                        fontWeight: 600,
                                                         flexShrink: 0,
                                                     }}
-                                                />
+                                                >
+                                                    {initials}
+                                                </Avatar>
 
-                                                <div className="d-flex flex-column">
-                                                    <span className="fw-semibold text-primary">
-                                                        Assign to me
+                                                <div className="d-flex flex-column overflow-hidden">
+                                                    <span className="fw-semibold small text-dark text-truncate">
+                                                        {name}
+                                                    </span>
+
+                                                    <span
+                                                        className="small text-secondary text-truncate"
+                                                        style={{ fontSize: 12 }}
+                                                    >
+                                                        {email}
                                                     </span>
                                                 </div>
                                             </div>
                                         ),
-                                    },
-
-                                    ...userOptions?.map((item) => {
-                                        const name = item?.full_name || 'Unknown User';
-                                        const email = item?.authId?.email || '';
-
-                                        const initials = name
-                                            .split(' ')
-                                            .filter(Boolean)
-                                            .slice(0, 2)
-                                            .map((part) => part[0])
-                                            .join('')
-                                            .toUpperCase();
-
-                                        return {
-                                            value: item?.authId?._id || item?.authId?.id,
-                                            label: (
-                                                <div className="d-flex align-items-center gap-2 py-1">
-                                                    <Avatar
-                                                        size={25}
-                                                        style={{
-                                                            backgroundColor: '#e6f4ff',
-                                                            color: '#1677ff',
-                                                            fontSize: 12,
-                                                            fontWeight: 600,
-                                                            flexShrink: 0,
-                                                        }}
-                                                    >
-                                                        {initials}
-                                                    </Avatar>
-
-                                                    <div className="d-flex flex-column overflow-hidden">
-                                                        <span className="fw-semibold small text-dark text-truncate">
-                                                            {name}
-                                                        </span>
-
-                                                        <span
-                                                            className="small text-secondary text-truncate"
-                                                            style={{ fontSize: 12 }}
-                                                        >
-                                                            {email}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            ),
-                                        };
-                                    }),
-                                ]}
+                                    };
+                                })}
                             />
                         </FieldWrapper>
                         <FieldWrapper

@@ -1452,3 +1452,24 @@
     padding: 11px;
   }
 }
+
+.dashboard-stat-card {
+    border: 1px solid #f0f0f0 !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.025);
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    border-color: #e5e7eb !important;
+}
+
+.dashboard-stat-card .ant-statistic-content {
+    line-height: 1.2;
+}
+
+.dashboard-stat-card .ant-progress {
+    margin-bottom: 0;
+}
